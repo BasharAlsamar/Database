@@ -1,4 +1,4 @@
-### What is SQLite ?
+### **What is SQLite** ?
 #### `SQLite:` is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
 ### Serverless
@@ -205,4 +205,53 @@ SELECT * FROM tracks;
 
 > - ### NOTE: You should use the asterisk (*) for the testing purpose only, not in the real application development. Becaus When you develop an application, you should control what SQLite returns to your application. Suppose, a table has 3 columns, and you use the asterisk (*) to retrieve the data from all three columns. What if someone removes a column, your application would not be working properly, because it assumes that there are three columns returned and the logic to process those three columns would be broken.
 
+-----------------------------------------------------------
+> 2. ### SQLite ORDER BY:
+#### If you use the  `SELECT` statement to query data from a table, the order of rows in the result set is unspecified.
 
+#### To sort the result set, you add the `ORDER BY` clause to the  SELECT statement as follows:
+
+```bash
+SELECT
+   select_list
+FROM
+   table
+ORDER BY
+    column_1 ASC,
+    column_2 DESC;
+```
+
+* ### The `ASC` keyword means ascending.
+* ### And the `DESC` keyword means descending.
+- ### Suppose, you want to get data from ***name***, ***milliseconds***, and ***album id*** columns and you want to sort the sorted result (by ***AlbumId***) above by the ***Milliseconds*** column in descending order. In this case, you need to add the ***Milliseconds*** column to the `ORDER BY` clause as follows:, you use the following statement:
+```bash
+SELECT
+	name,
+	milliseconds, 
+	albumid
+FROM
+	tracks
+ORDER BY
+	albumid ASC,
+        milliseconds DESC;
+```
+![7](images/7.png)
+
+* ### **Sorting NULLs:**
+#### In the database world, NULL is special. It denotes that the information missing or the data is not applicable.
+
+> ***NOTE***: SQLite 3.30.0 added the `NULLS FIRST` and `NULLS LAST` options to the ORDER BY clause. The `NULLS FIRST` option specifies that the NULLs will appear at the beginning of the result set while the `NULLS LAST` option place NULLs at the end of the result set.
+
+- ### The following example uses the `NULLS LAST` option to place ***NULLs*** after other values:
+
+```bash
+SELECT 
+    TrackId, 
+    Name, 
+    Composer 
+FROM 
+    tracks
+ORDER BY 
+    Composer NULLS LAST;
+```
+![8](images/8.png)
