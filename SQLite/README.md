@@ -255,3 +255,126 @@ ORDER BY
     Composer NULLS LAST;
 ```
 ![8](images/8.png)
+
+> ### 3.   SQLite SELECT DISTINCT:
+ #### The `DISTINCT` clause is an optional clause of the  `SELECT` statement. The `DISTINCT` clause allows you to remove the duplicate rows in the result set.
+
+ * #### The syntax of the `DISTINCT` clause:
+```bash
+SELECT DISTINCT	select_list
+FROM table;
+```
+
+- ### Suppose you want to know the cities where the customers locate, you can use the `SELECT` statement to get data from the ***city*** column of the ***customers*** table as follows:
+
+```bash
+SELECT city
+FROM customers
+ORDER BY city;
+```
+![9](images/9.png)
+
+- ### It returns 59 rows. There are few duplicate rows such as ***Berlin ,London*** and ***Mountain View***. To remove these duplicate rows, you use the `DISTINCT` clause as follows:
+```bash
+SELECT DISTINCT city
+FROM customers
+ORDER BY city;
+```
+![10](images/10.png)
+
+> ###  ***NOTE**: if i select a list of columns from a table and want to get a unique combination of some columns, i can use the `GROUP BY` clause.
+
+-----------------------------------------------------------
+
+> ### 4.  SQLite WHERE clause: 
+#### The `WHERE` clause is an optional clause of the `SELECT` statement. It appears after the `FROM` clause as the following statement:
+
+```bash
+SELECT
+	column_list
+FROM
+	table
+WHERE
+	search_condition;
+```
+- #### SQLite uses the following steps:
+
+- ####  First, check the table in the `FROM` clause.
+- #### Second, evaluate the conditions in the `WHERE` clause to get the rows that met these conditions.
+- ### Third, make the final result set based on the rows in the previous step with columns in the `SELECT` clause.
+### The search condition in the `WHERE` has the following form:
+```bash
+left_expression COMPARISON_OPERATOR right_expression
+```
+
+## + **SQLite comparison operators**:
+![11](images/11.png)
+
+## + **SQLite logical operators**:
+![12](images/12.png)
+
+- ### The equality operator (`=`) is the most commonly used operator. For example, the following query uses the `WHERE` clause the equality operator to find all the tracks in the album id 1:
+
+```bash
+SELECT
+   name,
+   milliseconds,
+   bytes,
+   albumid
+FROM
+   tracks
+WHERE
+   albumid = 1;
+```
+![13](images/13.png)
+
+- ### I can use the logical operator to combine expressions. For example, to get tracks of the album 1 that have the length greater than 200,000 milliseconds, i use the following statement:
+
+```bash
+SELECT
+	name,
+	milliseconds,
+	bytes,
+	albumid
+FROM
+	tracks
+WHERE
+	albumid = 1
+AND milliseconds > 250000;
+```
+![14](images/14.png)
+
+> ### SQLite WHERE clause with LIKE operator:
+### Sometimes, you may not remember exactly the data that you want to search. In this case, you perform an inexact search using the `LIKE` operator.
+
+### For example, to find which tracks composed by Smith, you use the LIKE operator as follows:
+
+```bash
+SELECT
+	name,
+	albumid,
+	composer
+FROM
+	tracks
+WHERE
+	composer LIKE '%Smith%'
+ORDER BY
+	albumid;
+```
+![15](images/15.png)
+
+> ### SQLite WHERE clause with the IN operator:
+The `IN` operator allows you to check whether a value is in a list of a comma-separated list of values. For example, to find tracks that have media type id is 2 or 3, you use the `IN` operator as shown in the following statement:
+
+```bash
+SELECT
+	name,
+	albumid,
+	mediatypeid
+FROM
+	tracks
+WHERE
+	mediatypeid IN (2, 3);
+```
+![16](images/16.png)
+-----------------------------------------------------------
