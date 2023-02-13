@@ -33,12 +33,12 @@
 ![5](images/5.png)
 
 ### 2. navigate to the `C:\sqlite` folder.
-```bash
+```js
 C:\cd c:\sqlite
 C:\sqlite>
 ```
 ### 3. type `sqlite3` and press enter, you should see the following output:
-```bash
+```js
 C:\sqlite>sqlite3
 SQLite version 3.29.0 2019-07-10 17:32:03
 Enter ".help" for usage hints.
@@ -52,7 +52,7 @@ sqlite> .quit
 ```
 ## SQLite Commands:
 * ### To start the sqlite3, you type the `sqlite3` as follows:
-```bash
+```js
 >sqlite3
 SQLite version 3.29.0 2019-07-10 17:32:03
 Enter ".help" for usage hints.
@@ -61,13 +61,13 @@ Use ".open FILENAME" to reopen on a persistent database.
 ```
 
 * ### To open a database file, you use the `.open FILENAME` command. The following statement opens the chinook.db database:
- ```bash
+ ```js
 sqlite> .open c:\sqlite\db\chinook.db
 ```
 
 * ### Show tables in a database
 #### To display all the tables in the current database, you use the `.tables` command. The following commands open a new database connection to the chinook database and display the tables in the database.
-```bash
+```js
 >sqlite3 c:\sqlite\db\chinook.db
 SQLite version 3.29.0 2019-07-10 17:32:03
 Enter ".help" for usage hints.
@@ -78,13 +78,13 @@ customers       invoice_items   playlist_track
 sqlite>
 ```
 * ### To exit the sqlite3 program, you use the `.exit` command.
-```bash
+```js
 sqlite>.exit
 ```
 * ### To find tables based on a specific pattern, you use the `.table` pattern command. The sqlite3 uses the `LIKE` operator for pattern matching.
 
 ### For example, the following statement returns the table that ends with the string `es`.
-```bash
+```js
 sqlite> .table '%es'
 employees    genres       invoices     media_types
 sqlite>
@@ -93,7 +93,7 @@ sqlite>
 * ### Show the structure of a table
 
 ### The following command shows the structure of the albums table.
-```bash
+```js
 sqlite> .schema albums
 CREATE TABLE "albums"
 (
@@ -108,13 +108,13 @@ sqlite>
 ```
 
 * ### To show all indexes of the current database
-```bash
+```js
 sqlite> .indexes
 ```
 
 * ### To show the indexes of a specific table, you use the `.indexes TABLE` command. For example, to show indexes of the `albums` table, you use the following command:
 
-```bash
+```js
 sqlite> .indexes albums
 ```
 
@@ -125,7 +125,7 @@ sqlite> .indexes albums
 
     ### The following commands select the `title` from the `albums` table and write the result to the ``albums.txt` file.
 
-```bash
+```js
 sqlite> .output albums.txt
 sqlite> SELECT title FROM albums;
 ```
@@ -133,7 +133,7 @@ sqlite> SELECT title FROM albums;
 - ### Execute SQL statements from a file
   ### Suppose we have a file named `commands.txt` in the `c:\sqlite\` folder with the following content:
 
-```bash
+```js
 SELECT albumid, title
 FROM albums
 ORDER BY title
@@ -141,7 +141,7 @@ LIMIT 10;
 ```
 - ### To execute the SQL statements in the `commands.txt` file, you use the `.read FILENAME` command as follows:
 
-```bash
+```js
 sqlite> .mode column
 sqlite> .header on
 sqlite> .read c:/sqlite/commands.txt
@@ -165,7 +165,7 @@ AlbumId     Title
 - ### Querying data from a table using the SELECT statement
   ### We often use the SELECT statement to query data from one or more table. The syntax of the SELECT statement is as follows:
 
-```bash
+```js
 SELECT DISTINCT column_list
 FROM table_list
   JOIN table ON join_condition
@@ -185,7 +185,7 @@ HAVING group_filter;
 - #### Use `HAVING` clause to filter groups.
 
 * ### To get data from the tracks table such as trackid, track name, composer, and unit price, you use the following statement:
-```bash
+```js
 SELECT
 	trackid,
 	name,
@@ -199,7 +199,7 @@ FROM
   ![6](images/6.png)
 
 * ### To get data from all columns: 
-```bash
+```js
 SELECT * FROM tracks;
 ```
 
@@ -211,7 +211,7 @@ SELECT * FROM tracks;
 
 #### To sort the result set, you add the `ORDER BY` clause to the  SELECT statement as follows:
 
-```bash
+```js
 SELECT
    select_list
 FROM
@@ -224,7 +224,7 @@ ORDER BY
 * ### The `ASC` keyword means ascending.
 * ### And the `DESC` keyword means descending.
 - ### Suppose, you want to get data from ***name***, ***milliseconds***, and ***album id*** columns and you want to sort the sorted result (by ***AlbumId***) above by the ***Milliseconds*** column in descending order. In this case, you need to add the ***Milliseconds*** column to the `ORDER BY` clause as follows:, you use the following statement:
-```bash
+```js
 SELECT
 	name,
 	milliseconds, 
@@ -244,7 +244,7 @@ ORDER BY
 
 - ### The following example uses the `NULLS LAST` option to place ***NULLs*** after other values:
 
-```bash
+```js
 SELECT 
     TrackId, 
     Name, 
@@ -260,14 +260,14 @@ ORDER BY
  #### The `DISTINCT` clause is an optional clause of the  `SELECT` statement. The `DISTINCT` clause allows you to remove the duplicate rows in the result set.
 
  * #### The syntax of the `DISTINCT` clause:
-```bash
+```js
 SELECT DISTINCT	select_list
 FROM table;
 ```
 
 - ### Suppose you want to know the cities where the customers locate, you can use the `SELECT` statement to get data from the ***city*** column of the ***customers*** table as follows:
 
-```bash
+```js
 SELECT city
 FROM customers
 ORDER BY city;
@@ -275,7 +275,7 @@ ORDER BY city;
 ![9](images/9.png)
 
 - ### It returns 59 rows. There are few duplicate rows such as ***Berlin ,London*** and ***Mountain View***. To remove these duplicate rows, you use the `DISTINCT` clause as follows:
-```bash
+```js
 SELECT DISTINCT city
 FROM customers
 ORDER BY city;
@@ -289,7 +289,7 @@ ORDER BY city;
 > ### 4.  SQLite WHERE clause: 
 #### The `WHERE` clause is an optional clause of the `SELECT` statement. It appears after the `FROM` clause as the following statement:
 
-```bash
+```js
 SELECT
 	column_list
 FROM
@@ -303,7 +303,7 @@ WHERE
 - #### Second, evaluate the conditions in the `WHERE` clause to get the rows that met these conditions.
 - ### Third, make the final result set based on the rows in the previous step with columns in the `SELECT` clause.
 ### The search condition in the `WHERE` has the following form:
-```bash
+```js
 left_expression COMPARISON_OPERATOR right_expression
 ```
 
@@ -315,7 +315,7 @@ left_expression COMPARISON_OPERATOR right_expression
 
 - ### The equality operator (`=`) is the most commonly used operator. For example, the following query uses the `WHERE` clause the equality operator to find all the tracks in the album id 1:
 
-```bash
+```js
 SELECT
    name,
    milliseconds,
@@ -330,7 +330,7 @@ WHERE
 
 - ### I can use the logical operator to combine expressions. For example, to get tracks of the album 1 that have the length greater than 200,000 milliseconds, i use the following statement:
 
-```bash
+```js
 SELECT
 	name,
 	milliseconds,
@@ -349,7 +349,7 @@ AND milliseconds > 250000;
 
 ### For example, to find which tracks composed by Smith, you use the LIKE operator as follows:
 
-```bash
+```js
 SELECT
 	name,
 	albumid,
@@ -366,7 +366,7 @@ ORDER BY
 > ### SQLite WHERE clause with the IN operator:
 The `IN` operator allows you to check whether a value is in a list of a comma-separated list of values. For example, to find tracks that have media type id is 2 or 3, you use the `IN` operator as shown in the following statement:
 
-```bash
+```js
 SELECT
 	name,
 	albumid,
@@ -377,4 +377,282 @@ WHERE
 	mediatypeid IN (2, 3);
 ```
 ![16](images/16.png)
+
 -----------------------------------------------------------
+
+> ### 5. SQLite LIMIT clause:
+### use the `LIMIT` clause to constrain the number of rows returned by the query.
+```js
+SELECT
+	column_list
+FROM
+	table
+LIMIT row_count;
+```
+### For example, to get the first 10 rows in the ***tracks*** table, you use the following statement:
+
+```js
+SELECT
+	trackId,
+	name
+FROM
+	tracks
+LIMIT 10;
+```
+![17](images/17.png)
+
+### to get the first 10 rows starting from the 10th row of the result set, you use `LIMIT OFFSET` keyword as the following:
+```js
+SELECT
+	column_list
+FROM
+	table
+LIMIT offset, row_count;
+```
+### For example, to get 10 rows starting from the 11th row in the tracks table, you use the following statement:
+
+```js
+SELECT
+	trackId,
+	name
+FROM
+	tracks
+LIMIT 10 OFFSET 10;
+```
+
+![18](images/18.png)
+> ### LIMIT and ORDER BY clause:
+-----------------------------------------------
+>### ***NOTE:*** I should always use the `LIMIT` clause with the  `ORDER BY` clause. Because i want to get a number of rows in a specified order, not in an unspecified order.
+
+```js
+SELECT
+   column_list
+FROM
+   table
+ORDER BY column_1
+LIMIT row_count;
+```
+### to get the top 10 biggest tracks by size, you use the following query:
+```js
+SELECT
+	trackid,
+	name,
+	bytes
+FROM
+	tracks
+ORDER BY
+	bytes DESC
+LIMIT 10;
+```
+![19](images/19.png)
+
+### To get the 5 shortest tracks, you sort the tracks by the length specified by milliseconds column using `ORDER BY` clause and get the first 5 rows using LIMIT clause.
+
+```js
+SELECT
+	trackid,
+	name,
+	milliseconds
+FROM
+	tracks
+ORDER BY
+	milliseconds ASC
+LIMIT 5;
+```
+![20](images/20.png)
+
+### Getting the nth highest and the lowest value:
+### You can use the `ORDER BY` and `LIMIT` clauses to get the nth highest or lowest value rows.
+### you use the following steps:
+
+### - First, use `ORDER BY` to sort the result set in ascending order in case you want to get the nth lowest value, or descending order if you want to get the nth highest value.
+### - Second, use the `LIMIT` OFFSET clause to get the nth highest or the nth lowest row.
+### The following statement returns the second-longest track in the tracks table.
+```js
+SELECT
+	trackid,
+	name,
+	milliseconds
+FROM
+	tracks
+ORDER BY
+	milliseconds DESC
+LIMIT 1 OFFSET 1;
+```
+![21](images/21.png)
+
+### The following statement gets the third smallest track on the tracks table.
+
+```js
+SELECT
+	trackid,
+	name,
+	bytes
+FROM
+	tracks
+ORDER BY
+	bytes
+LIMIT 1 OFFSET 2;
+```
+![22](images/22.png)
+
+-----------------------------------
+
+> ### 6. SQLite BETWEEN Operator:
+### The `BETWEEN` operator is a logical operator that tests whether a value is in range of values. If the value is in the specified range, the `BETWEEN` operator returns true. The `BETWEEN` operator can be used in the `WHERE` clause of the `SELECT`, `DELETE`, `UPDATE`, and `REPLACE` statements.
+
+### The following illustrates the syntax of the SQLite BETWEEN operator:
+
+```js
+test_expression BETWEEN low_expression AND high_expression
+```
+
+### To negate the result of the BETWEEN operator, you use the NOT BETWEEN operator as follows:
+
+```js
+test_expression NOT BETWEEN low_expression AND high_expression
+```
+### * The following statement finds invoices whose total is between 14.96 and 18.86:
+
+```js
+SELECT
+    InvoiceId,
+    BillingAddress,
+    Total
+FROM
+    invoices
+WHERE
+    Total BETWEEN 14.91 and 18.86    
+ORDER BY
+    Total; 
+```
+![23](images/23.png)
+
+### - To find the invoices whose total are not between 1 and 20, you use the NOT BETWEEN operator as shown in the following query:
+
+```js
+SELECT
+    InvoiceId,
+    BillingAddress,
+    Total
+FROM
+    invoices
+WHERE
+    Total NOT BETWEEN 1 and 20
+ORDER BY
+    Total;    
+```
+![24](images/24.png)
+
+> ###  SQLite BETWEEN dates example:
+
+- ### The following example finds invoices whose invoice dates are from January 1 2010 and January 31 2010:
+
+```js
+SELECT
+    InvoiceId,
+    BillingAddress,
+    InvoiceDate,
+    Total
+FROM
+    invoices
+WHERE
+    InvoiceDate BETWEEN '2010-01-01' AND '2010-01-31'
+ORDER BY
+    InvoiceDate;    
+```
+![25](images/25.png)
+
+> ### SQLite NOT BETWEEN dates example:
+### - The following statement finds invoices whose dates are not between January 03, 2009, and December 01, 2013:
+
+```js
+SELECT
+    InvoiceId,
+    BillingAddress,
+    date(InvoiceDate) InvoiceDate,
+    Total
+FROM
+    invoices
+WHERE
+    InvoiceDate NOT BETWEEN '2009-01-03' AND '2013-12-01'
+ORDER BY
+    InvoiceDate;
+```
+![26](images/26.png)
+
+------------------------------
+
+> ### 7. SQLite IN operator:
+
+ ### The SQLite IN operator determines whether a value matches any value in a list or a subquery.
+
+* ###  The following statement uses the IN operator to query the tracks whose media type id is 1 or 2.
+
+```js 
+SELECT
+	TrackId,
+	Name,
+	Mediatypeid
+FROM
+	Tracks
+WHERE
+	MediaTypeId IN (1, 2)
+ORDER BY
+	Name ASC;
+```
+![27](images/27.png)
+
+- ### IN operator with a subquery example:
+### The following query returns a list of album id of the artist id 12:
+
+```js
+SELECT albumid
+FROM albums
+WHERE artistid = 12;
+```
+![28](images/28.png)
+
+- ### To get the tracks that belong to the artist id 12, you can combine the `IN` operator with a subquery as follows:
+
+```js
+SELECT
+	TrackId, 
+	Name, 
+	AlbumId
+FROM
+	Tracks
+WHERE
+	AlbumId IN (
+		SELECT
+			AlbumId
+		FROM
+			Albums
+		WHERE
+			ArtistId = 12
+	);
+```
+![29](images/29.png)
+
+### In this example:
+
+* ### First, the subquery returns a list of album ids that belong to the artist id 12.
+* ### Then, the outer query return all tracks whose album id matches with the album id list returned by the subquery.
+
+### - The following statement returns a list of tracks whose genre id is not in a list of (1,2,3).
+
+```js
+SELECT
+	trackid,
+	name,
+	genreid
+FROM
+	tracks
+WHERE
+	genreid NOT IN (1, 2,3);
+```
+![30](images/30.png)
+
+---------------------------------------------
+
