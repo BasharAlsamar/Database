@@ -950,3 +950,132 @@ WHERE
 	name GLOB '*[1-9]';
 ```
 ![41](images/41.png)
+
+<br/>
+
+> ### 11. SQLite joins: 
+### To query data from two or more tables.
+### Example: I will use the *artists* and *albums* tables:
+
+![42](images/42.png)
+
++ ### To query data from both *artists* and *albums* tables, you use can use an `INNER JOIN`, `LEFT JOIN`, or `CROSS JOIN` clause. Each join clause determines how SQLite uses data from one table to match with rows in another table.
+
+>>  ### ***Note:*** that SQLite doesn’t directly support the `RIGHT JOIN` and `FULL OUTER JOIN`.
+
+<br/>
+
+> ### SQLite INNER JOIN: 
+- ### The following statement returns the album titles and their artist names:
+
+```sql
+SELECT 
+    Title,
+    Name
+FROM 
+    albums
+INNER JOIN artists 
+    ON artists.ArtistId = albums.ArtistId;
+```
+![43](images/43.png)
+
+### In this example, the `INNER JOIN` clause matches each row from the albums table with every row from the *artists* table based on the join condition `(artists.ArtistId = albums.ArtistId)` specified after the `ON` keyword.
+
+### If the join condition evaluates to true (or 1), the columns of rows from both *albums* and *artists* tables are included in the result set.
+
+### This query uses table aliases (`l` for the albums table and `r` for artists table) to shorten the query:
+
+```sql
+SELECT
+    l.Title, 
+    r.Name
+FROM
+    albums l
+INNER JOIN artists r ON
+    r.ArtistId = l.ArtistId;
+```
+
+<br />
+
+> ### SQLite LEFT JOIN:
+### This statement selects the artist names and album titles from the artists and albums tables using the LEFT JOIN clause:
+
+```sql
+SELECT
+    Name, 
+    Title
+FROM
+    artists
+LEFT JOIN albums ON
+    artists.ArtistId = albums.ArtistId
+ORDER BY Name;
+```
+![44](images/44.png)
+
+### The `LEFT JOIN` clause selects data starting from the left table (*artists*) and matching rows in the right table (*albums*) based on the join condition (*artists.ArtistId = albums.ArtistId*) .
+
+- ### The left join returns all rows from the artists table (or left table) and the matching rows from the albums table (or right table).
+
+- ### If a row from the left table doesn’t have a matching row in the right table, SQLite includes columns of the rows in the left table and NULL for the columns of the right table.
+
+<br/>
+
+> ### SQLite CROSS JOIN:
+
+- ### The `CROSS JOIN` clause creates a Cartesian product of rows from the joined tables.
+
+- ### Unlike the `INNER JOIN` and `LEFT JOIN` clauses, a `CROSS JOIN` doesn’t have a join condition. Here is the basic syntax of the CROSS JOIN clause:
+
+```sql
+SELECT
+    select_list
+FROM table1
+CROSS JOIN table2;
+```
+>> ### **NOTE:** If the first table has N rows, the second table has M rows, the final result will have NxM rows.
+
+<br/>
+
+### - The following script creates the products and calendars tables:
+
+```sql
+CREATE TABLE products(
+    product text NOT null
+);
+
+INSERT INTO products(product)
+VALUES('P1'),('P2'),('P3');
+
+
+
+CREATE TABLE calendars(
+    y int NOT NULL,
+    m int NOT NULL
+);
+
+INSERT INTO calendars(y,m)
+VALUES 
+    (2019,1),
+    (2019,2),
+    (2019,3),
+    (2019,4),
+    (2019,5),
+    (2019,6),
+    (2019,7),
+    (2019,8),
+    (2019,9),
+    (2019,10),
+    (2019,11),
+    (2019,12);
+```
+
+* ### This query uses the `CROSS JOIN` clause to combine the *products* with the *months*:
+
+```sql
+SELECT * 
+FROM products
+CROSS JOIN calendars;
+```
+![45](images/45.png)
+
+-----------------------------------
