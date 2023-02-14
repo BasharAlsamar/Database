@@ -682,9 +682,118 @@ WHERE
 
 * ### And the %per% pattern matches any string that contains per such as percent and peeper.
 
-The underscore _ wildcard examples
-The h_nt pattern matches hunt, hint, etc. The __pple pattern matches topple, supple, tipple, etc.
-Note that SQLite LIKE operator is case-insensitive. It means "A" LIKE "a" is true.
+### - The underscore _ wildcard examples:
+* ### The `h_nt` pattern matches hunt, hint, etc. The __pple pattern matches topple, supple, tipple, etc.
 
-However, for Unicode characters that are not in the ASCII ranges, the LIKE operator is case sensitive e.g., "Ä" LIKE "ä" is false.
-In case you want to make LIKE operator works case-sensitively, you need to use the following PRAGMA:
+> ### ***Note:*** that SQLite `LIKE` operator is case-insensitive. It means "A" LIKE "a" is true.
+
+> - ### However, for Unicode characters that are not in the ASCII ranges, the LIKE operator is case sensitive e.g., "Ä" LIKE "ä" is false.
+
+* ### To find the tracks whose names start with the `Wild` literal string, you use the percent sign `%` wildcard at the end of the pattern.
+
+```sql
+SELECT
+	trackid,
+	name	
+FROM
+	tracks
+WHERE
+	name LIKE 'Wild%'
+```
+![31](images/31.png)
+
+* ### To find the tracks whose names end with Wild word, you use % wildcard at the beginning of the pattern.
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name LIKE '%Wild'
+```
+![32](images/32.png)
+
+* ### To find the tracks whose names contain the Wild literal string, you use `%` wildcard at the beginning and end of the pattern:
+
+```sql
+SELECT
+	trackid,
+	name	
+FROM
+	tracks
+WHERE
+	name LIKE '%Wild%';
+```
+![33](images/33.png)
+
+> ### LIKE with ESCAPE clause:
+### If the pattern that you want to match contains `%` or `_` , you must use an escape character in an optional `ESCAPE` clause as follows:
+
+```sql
+column_1 LIKE pattern ESCAPE expression;
+```
+-  ### First, create a table t that has one column:
+
+```sql
+CREATE TABLE t(
+	c TEXT
+);
+```
+- ### Next, insert some rows into the table t:
+
+```sql
+INSERT INTO t(c)
+VALUES('10% increase'),
+	('10 times decrease'),
+	('100% vs. last year'),
+	('20% increase next year');
+```
+* ### Then, query data from the t table:
+
+```sql
+SELECT * FROM t;
+```
+```bash
+c                     
+----------------------
+10% increase          
+10 times decrease     
+100% vs. last year    
+20% increase next year
+```
+
+* ### Fourth, attempt to find the row whose value in the c column contains the 10% literal string:
+
+```sql
+SELECT c 
+FROM t 
+WHERE c LIKE '%10%%';
+```
+* ### However, it returns rows whose values in the c column contains 10:
+
+```
+c                 
+------------------
+10% increase      
+10 times decrease 
+100% vs. last year
+```
+
+* ### Fifth, to get the correct result, you use the ESCAPE clause as shown in the following query:
+
+```sql
+SELECT c 
+FROM t 
+WHERE c LIKE '%10\%%' ESCAPE '\';
+```
+
+* ### Here is the result set:
+
+```
+c           
+------------
+10% increase
+```
+----------
