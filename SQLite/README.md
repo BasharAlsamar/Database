@@ -796,4 +796,157 @@ c
 ------------
 10% increase
 ```
-----------
+----------------------
+
+> ### 9. SQLite IS NULL operator:
+* ### `NULL` is special. It indicates that a piece of information is unknown or not applicable.
+
+### The following statement attempts to find tracks whose composers are NULL:
+
+```sql
+SELECT
+    Name, 
+    Composer
+FROM
+    tracks
+WHERE
+    Composer = NULL;
+```
+* ### It returns an empty row without issuing any additional message.
+
+### - To find all tracks whose composers are unknown, you use the IS NULL operator as shown in the following query:
+
+```sql
+SELECT
+    Name, 
+    Composer
+FROM
+    tracks
+WHERE
+    Composer IS NULL
+ORDER BY 
+    Name;
+```   
+![34](images/34.png)
+
+> ### SQLite IS NOT NULL operator:
+### The NOT operator negates the IS NULL operator as follows:
+
+```
+expression | column IS NOT NULL
+```
+
+* ### The following example finds tracks whose composers are not NULL:
+
+```sql
+SELECT
+    Name, 
+    Composer
+FROM
+    tracks
+WHERE
+    Composer IS NOT NULL
+ORDER BY 
+    Name;     
+```
+![35](images/35.png)
+
+> ### 10. SQLite GLOB operator:
+
+- ### The `GLOB` operator is similar to the `LIKE` operator. The `GLOB` operator determines whether a string matches a specific pattern.
+
+>> ###  ***NOTE:*** the `GLOB` patterns do not have escape characters.
+
+### - The following shows the wildcards used with the `GLOB`  operator:
+
+* ### The asterisk (`*`) wildcard matches any number of characters.
+* ### The question mark (`?`) wildcard matches exactly one character.
+<br />
+
+### The following statement finds tracks whose names start with the string *Man*.
+### The pattern *Man** matches any string that starts with Man.
+
+```sql 
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB 'Man*';
+```
+![36](images/36.png)
+
+<br />
+
+- ## The following statement gets the tracks whose names end with `Man`. The pattern `*Man` matches any string that ends with Man.
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB '*Man';
+```
+![37](images/37.png)
+<br />
+
+* ### The following query finds the tracks whose names start with any single character (`?`), followed by the string `ere` and then any number of character (`*`).
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB '?ere*';
+```
+![38](images/38.png)
+
+<br/>
+
+* ### To find the tracks whose names contain numbers, you can use the list wildcard `[0-9]` as follows:
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB '*[1-9]*';
+```
+![39](images/39.png)
+
+<br/>
+
+* ### to find the tracks whose name does not contain any number, you place the character `^` at the beginning of the list:
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB '*[^1-9]*';
+```
+![40](images/40.png)
+
+<br/>
+
++ ### The following statement finds the tracks whose names end with a number.
+
+```sql
+SELECT
+	trackid,
+	name
+FROM
+	tracks
+WHERE
+	name GLOB '*[1-9]';
+```
+![41](images/41.png)
