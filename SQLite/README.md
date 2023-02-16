@@ -1079,3 +1079,99 @@ CROSS JOIN calendars;
 ![45](images/45.png)
 
 -----------------------------------
+
+> ### 12.  SQLite inner join clause:
+### To query data from multiple tables, you use `INNER JOIN` clause. The `INNER JOIN` clause combines columns from correlated tables.
+
+<br />
+
+### Suppose you have two tables: A and B.
+<br />
+
+### A has a1, a2, and f columns. B has b1, b2, and f column. The A table links to the B table using a foreign key column named f.
+
+```sql
+SELECT a1, a2, b1, b2
+FROM A
+INNER JOIN B on B.f = A.f;
+```
+<br/>
+
+* ### For each row in the ***A*** table, the `INNER JOIN` clause compares the value of the ***f*** column with the value of the ***f*** column in the ***B*** table. If the value of the ***f*** column in the ***A*** table equals the value of the ***f*** column in the ***B*** table, it combines data from ***a1, a2, b1, b2***, columns and includes this row in the result set.
+
+<br/>
+
+![46](images/46.png)
+
+* ### Only the rows in the A table: (a1,1), (a3,3) have the corresponding rows in the B table (b1,1), (b2,3) are included in the result set.
+
+<br/>
+
+- ### The following diagram illustrates the `INNER JOIN` clause:
+![47](images/47.png)
+
+<br/>
+
+- ### Let’s take a look at the ***tracks*** and ***albums*** tables in the sample database. The tracks table links to the ***albums** table via ***AlbumId*** column.
+
+![48](images/48.png)
+
+###  - In the tracks table, the ***AlbumId*** column is a `foreign` key. And in the ***albums*** table, the ***AlbumId*** is the `primary` key.
+<br />
+
+* ### To query data from both ***tracks*** and ***albums*** tables, you use the following statement:
+
+```sql
+SELECT
+	trackid,
+	name,
+	title
+FROM
+	tracks
+INNER JOIN albums ON albums.albumid = tracks.albumid;
+```
+![49](images/49.png)
+
+<br />
+
+> ###  `inner join`: 3 tables example:
+
+![50](images/50.png)
+
+<br />
+
+* ### To query data from these tables, you need to use two `inner join` clauses in the SELECT statement as follows:
+
+```sql
+SELECT
+    trackid,
+    tracks.name AS track,
+    albums.title AS album,
+    artists.name AS artist
+FROM
+    tracks
+    INNER JOIN albums ON albums.albumid = tracks.albumid
+    INNER JOIN artists ON artists.artistid = albums.artistid;
+```
+
+![51](images/51.png)
+
+<br />
+
+### - I can use a `WHERE` clause to get the ***tracks*** and ***albums*** of the ***artist*** with ***id*** 10 as the following statement:
+
+```sql
+SELECT
+	trackid,
+	tracks.name AS Track,
+	albums.title AS Album,
+	artists.name AS Artist
+FROM
+	tracks
+INNER JOIN albums ON albums.albumid = tracks.albumid
+INNER JOIN artists ON artists.artistid = albums.artistid
+WHERE
+	artists.artistid = 10;
+```
+
+![52](images/52.png)
