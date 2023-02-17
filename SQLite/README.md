@@ -20,7 +20,7 @@
 * [11. SQLite joins](#SQLite-joins) ✅
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
-* [14. SQLite CROSS JOIN](#SQLite-CROSS-JOIN) ✅
+* [14. SQLite CROSS JOIN](#14.-SQLite-CROSS-JOIN) ✅
 
 <br/>
 
