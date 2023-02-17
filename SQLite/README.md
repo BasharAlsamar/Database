@@ -1054,8 +1054,6 @@ ORDER BY Name;
 
 <br/>
 
-#### SQLite CROSS JOIN:
-
 - ### The `CROSS JOIN` clause creates a Cartesian product of rows from the joined tables.
 
 - ### Unlike the `INNER JOIN` and `LEFT JOIN` clauses, a `CROSS JOIN` doesn’t have a join condition. Here is the basic syntax of the CROSS JOIN clause:
