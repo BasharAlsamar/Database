@@ -12,7 +12,7 @@
 * [3. SQLite SELECT DISTINCT](#SQLite-SELECT-DISTINCT) ✅
 * [4. SQLite WHERE clause](#SQLite-WHERE-clause) ✅
 * [5. SQLite LIMIT clause](#SQLite-LIMIT-clause) ✅
-* [6. SQLite BETWEEN Operator:](#SQLite-BETWEEN-Operator:) ✅
+* [6. SQLite BETWEEN Operator](#SQLite-BETWEEN-Operator) ✅
 * [7. SQLite IN operator](#SQLite-IN-operator) ✅
 * [8. SQLite LIKE operator](#SQLite-LIKE-operator) ✅
 * [9. SQLite IS NULL operator](#SQLite-IS-NULL-operator) ✅
@@ -20,7 +20,7 @@
 * [11. SQLite joins](#SQLite-joins) ✅
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
-* [14. SQLite CROSS JOIN](#SQLite-CROSS-JOIN) ☑️
+* [14. SQLite CROSS JOIN](#SQLite-CROSS-JOIN) ✅
 
 <br/>
 
