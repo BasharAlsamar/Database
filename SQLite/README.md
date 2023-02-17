@@ -1179,7 +1179,93 @@ WHERE
 
 <br/>
 
-> ##  __13. SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
+> ## __13. SQLite LEFT JOIN clause:__  to query data from multiple tables. 
+
+* ### Similar to the INNER JOIN clause, the LEFT JOIN clause is an optional clause of the SELECT statement. You use the LEFT JOIN clause to query data from multiple related tables.
+
+### - Suppose we have two tables: A and B.
+
+* ### A has m and f columns.
+* ### B has n and f columns.
+### - To perform join between A and B using LEFT JOIN clause, you use the following statement:
+
+```sql
+SELECT
+	a,
+	b
+FROM
+	A
+LEFT JOIN B ON A.f = B.f
+WHERE search_condition;
+```
+
+
+- ### The expression `A.f = B.f` is a conditional expression. Besides the equality (=) operator, you can use other comparison operators such as greater than (>), less than (<), etc.
+
+- ### The statement returns a result set that includes:
+
+### - Rows in table A (left table) that have corresponding rows in table B.
+### -Rows in the table A table and the rows in the table B filled with NULL values in case the row from table A does not have any corresponding rows in table B.
+
+
+- ### In case you have a `WHERE` clause in the statement, the search_condition in the `WHERE` clause is applied after the matching of the LEFT JOIN clause completes.
+
+![53](images/53.png)
+
+- ### All rows in the table A are included in the result set.
+
+- ### Because the second row (a2,2) does not have a corresponding row in table B, the LEFT JOIN clause creates a fake row filled with NULL.
+
+- ### The following Venn Diagram illustrates the LEFT JOIN clause.
+
+![54](images/54.png)
+
+> ### LEFT JOIN examples:
+
+![55](images/55.png)
+
+<br />
+
+- ### To find artists who do not have any albums by using the LEFT JOIN clause, we select artists and their corresponding albums. If an artist does not have any albums, the value of the AlbumId column is NULL.
+
+### - To display the artists who do not have any albums first, we have two choices:
+
+- ### First, use `ORDER BY` clause to list the rows whose AlbumId is `NULL` values first.
+- ### Second, use `WHERE` clause and `IS NULL` operator to list only artists who do not have any albums.
+
+- ### The following statement uses the `LEFT JOIN` clause with the `ORDER BY` clause.
+
+```sql
+SELECT
+   artists.ArtistId, 
+   AlbumId
+FROM
+   artists
+LEFT JOIN albums ON
+   albums.ArtistId = artists.ArtistId
+ORDER BY
+   AlbumId;
+```
+<br />
+
+- ### The following statement uses the `LEFT JOIN` clause with the `WHERE` clause.
+
+```sql
+SELECT
+   artists.ArtistId
+   , AlbumId
+FROM
+   artists
+LEFT JOIN albums ON
+   albums.ArtistId = artists.ArtistId
+WHERE
+   AlbumId IS NULL;
+```
+
+<br />
+
+
+> ##  __14. SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
 
 * ### If you use a `LEFT JOIN`, `INNER JOIN`, or `CROSS JOIN` without the `ON` or `USING` clause, SQLite produces the Cartesian product of the involved tables. The number of rows in the Cartesian product is the product of the number of rows in each involved tables.
 
