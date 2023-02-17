@@ -1,5 +1,4 @@
 - # **contents**:
-* [What is SQLite?](#What-is-SQLite-?) ✅
 * [Download SQLite tools](#Download-SQLite-tools) ✅
 * [Run SQLite tools](#Run-SQLite-tools) ✅
 * [SQLite Commands](#SQLite-Commands) ✅
