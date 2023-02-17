@@ -235,7 +235,7 @@ SELECT * FROM tracks;
 > - ### NOTE: You should use the asterisk (*) for the testing purpose only, not in the real application development. Becaus When you develop an application, you should control what SQLite returns to your application. Suppose, a table has 3 columns, and you use the asterisk (*) to retrieve the data from all three columns. What if someone removes a column, your application would not be working properly, because it assumes that there are three columns returned and the logic to process those three columns would be broken.
 
 -----------------------------------------------------------
-> 2. ### SQLite ORDER BY:
+> ###  2. ### SQLite ORDER BY:
 #### If you use the  `SELECT` statement to query data from a table, the order of rows in the result set is unspecified.
 
 #### To sort the result set, you add the `ORDER BY` clause to the  SELECT statement as follows:
