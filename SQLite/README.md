@@ -20,7 +20,7 @@
 * [11. SQLite joins](#SQLite-joins) ✅
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
-* [14. SQLite CROSS JOIN](#14-.-SQLite-CROSS-JOIN) ✅
+* [14. SQLite CROSS JOIN](#__SQLite-CROSS-JOIN__) ✅
 
 <br/>
 
@@ -1294,7 +1294,7 @@ WHERE
 <br />
 
 
-> 14. ##  __ SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
+> 14. ##  __SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
 
 * ### If you use a `LEFT JOIN`, `INNER JOIN`, or `CROSS JOIN` without the `ON` or `USING` clause, SQLite produces the Cartesian product of the involved tables. The number of rows in the Cartesian product is the product of the number of rows in each involved tables.
 
