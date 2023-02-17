@@ -7,7 +7,7 @@
 <br />
 
 - # **SQLITE TUTORIAL:**
-* [1. SQLite Select](#SQLite-Select) ✅
+* [1. SQLite Select](#1-.-SQLite-Select) ✅
 * [2. SQLite ORDER BY](#SQLite-ORDER-BY) ✅
 * [3. SQLite SELECT DISTINCT](#SQLite-SELECT-DISTINCT) ✅
 * [4. SQLite WHERE clause](#SQLite-WHERE-clause) ✅
