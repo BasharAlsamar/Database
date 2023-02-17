@@ -189,7 +189,10 @@ AlbumId     Title
 ```
 
 ## **SQLITE TUTORIAL**:
-> 1. ### SQLite Select
+
+----------
+
+> 1. ### SQLite Select:
 
 - ### Querying data from a table using the SELECT statement
   ### We often use the SELECT statement to query data from one or more table. The syntax of the SELECT statement is as follows:
