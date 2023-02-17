@@ -1211,7 +1211,10 @@ WHERE
 
 <br/>
 
-> 13. ### SQLite LEFT JOIN clause:  to query data from multiple tables. 
+-----------------------------------
+
+> 13. ### SQLite LEFT JOIN clause:  
+### to query data from multiple tables. 
 
 * ### Similar to the INNER JOIN clause, the LEFT JOIN clause is an optional clause of the SELECT statement. You use the LEFT JOIN clause to query data from multiple related tables.
 
@@ -1295,6 +1298,8 @@ WHERE
 ```
 
 <br />
+
+-----------------------------------
 
 > 14. ### SQLite CROSS JOIN: 
 ### to combine two or more result sets from multiple tables.
