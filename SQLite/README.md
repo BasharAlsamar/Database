@@ -190,7 +190,7 @@ AlbumId     Title
 
 ## **SQLITE TUTORIAL**:
 
-----------
+-----------------------------------
 
 > 1. ### SQLite Select:
 
