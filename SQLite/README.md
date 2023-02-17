@@ -1,5 +1,5 @@
 - # **contents**:
-* [What is SQLite](#What-is-SQLite) ✅
+* [What is SQLite?](#What-is-SQLite-?) ✅
 * [Download SQLite tools](#Download-SQLite-tools) ✅
 * [Run SQLite tools](#Run-SQLite-tools) ✅
 * [SQLite Commands](#SQLite-Commands) ✅
@@ -32,7 +32,7 @@
 
 --------------------------------
 
-### **What is SQLite** ?
+### **What is SQLite?** 
 #### `SQLite:` is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
 ### Serverless
