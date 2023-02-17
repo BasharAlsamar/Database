@@ -7,7 +7,9 @@
 <br />
 
 - # **SQLITE TUTORIAL:**
-* [1. SQLite Select](#1-.-SQLite-Select) ✅
+<br />
+
+* [1. SQLite SELECT](#SQLite-SELECT) ✅
 * [2. SQLite ORDER BY](#SQLite-ORDER-BY) ✅
 * [3. SQLite SELECT DISTINCT](#SQLite-SELECT-DISTINCT) ✅
 * [4. SQLite WHERE clause](#SQLite-WHERE-clause) ✅
@@ -20,7 +22,7 @@
 * [11. SQLite joins](#SQLite-joins) ✅
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
-* [14. SQLite CROSS JOIN](#__SQLite-CROSS-JOIN__) ✅
+* [14. SQLite CROSS JOIN](#SQLite-CROSS-JOIN) ✅
 
 <br/>
 
@@ -190,9 +192,9 @@ AlbumId     Title
 
 ## **SQLITE TUTORIAL**:
 
------------------------------------
+-----------------------------------------------------------
 
-> 1. ### SQLite Select:
+> 1. ### SQLite SELECT:
 
 - ### Querying data from a table using the SELECT statement
   ### We often use the SELECT statement to query data from one or more table. The syntax of the SELECT statement is as follows:
