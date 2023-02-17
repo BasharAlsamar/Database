@@ -189,7 +189,7 @@ AlbumId     Title
 ```
 
 ## **SQLITE TUTORIAL**:
-> ### 1. SQLite Select
+> 1. ### SQLite Select
 
 - ### Querying data from a table using the SELECT statement
   ### We often use the SELECT statement to query data from one or more table. The syntax of the SELECT statement is as follows:
@@ -235,7 +235,7 @@ SELECT * FROM tracks;
 > - ### NOTE: You should use the asterisk (*) for the testing purpose only, not in the real application development. Becaus When you develop an application, you should control what SQLite returns to your application. Suppose, a table has 3 columns, and you use the asterisk (*) to retrieve the data from all three columns. What if someone removes a column, your application would not be working properly, because it assumes that there are three columns returned and the logic to process those three columns would be broken.
 
 -----------------------------------------------------------
-> ###  2. ### SQLite ORDER BY:
+> 2. ### SQLite ORDER BY:
 #### If you use the  `SELECT` statement to query data from a table, the order of rows in the result set is unspecified.
 
 #### To sort the result set, you add the `ORDER BY` clause to the  SELECT statement as follows:
@@ -285,7 +285,7 @@ ORDER BY
 ```
 ![8](images/8.png)
 
-> ### 3.   SQLite SELECT DISTINCT:
+> 3. ### SQLite SELECT DISTINCT:
  #### The `DISTINCT` clause is an optional clause of the  `SELECT` statement. The `DISTINCT` clause allows you to remove the duplicate rows in the result set.
 
  * #### The syntax of the `DISTINCT` clause:
@@ -315,7 +315,7 @@ ORDER BY city;
 
 -----------------------------------------------------------
 
-> ### 4.  SQLite WHERE clause: 
+> 4. ###  SQLite WHERE clause: 
 #### The `WHERE` clause is an optional clause of the `SELECT` statement. It appears after the `FROM` clause as the following statement:
 
 ```js
@@ -409,7 +409,7 @@ WHERE
 
 -----------------------------------------------------------
 
-> ### 5. SQLite LIMIT clause:
+> 5. ###  SQLite LIMIT clause:
 ### use the `LIMIT` clause to constrain the number of rows returned by the query.
 ```js
 SELECT
@@ -528,7 +528,7 @@ LIMIT 1 OFFSET 2;
 
 -----------------------------------
 
-> ### 6. SQLite BETWEEN Operator:
+> 6. ###  SQLite BETWEEN Operator:
 ### The `BETWEEN` operator is a logical operator that tests whether a value is in range of values. If the value is in the specified range, the `BETWEEN` operator returns true. The `BETWEEN` operator can be used in the `WHERE` clause of the `SELECT`, `DELETE`, `UPDATE`, and `REPLACE` statements.
 
 ### The following illustrates the syntax of the SQLite BETWEEN operator:
@@ -613,7 +613,7 @@ ORDER BY
 
 ------------------------------
 
-> ### 7. SQLite IN operator:
+> 7. ###  SQLite IN operator:
 
  ### The SQLite IN operator determines whether a value matches any value in a list or a subquery.
 
@@ -685,7 +685,7 @@ WHERE
 
 ---------------------------------------------
 
-> ### 8. SQLite LIKE operator:
+> 8. ###  SQLite LIKE operator:
 
 * ###  To query data based on partial information, you use the `LIKE` operator in the `WHERE` clause of the `SELECT` statement as follows:
 
@@ -827,7 +827,7 @@ c
 ```
 ----------------------
 
-> ### 9. SQLite IS NULL operator:
+> 9. ###  SQLite IS NULL operator:
 * ### `NULL` is special. It indicates that a piece of information is unknown or not applicable.
 
 ### The following statement attempts to find tracks whose composers are NULL:
@@ -880,7 +880,7 @@ ORDER BY
 ```
 ![35](images/35.png)
 
-> ### 10. SQLite GLOB operator:
+>  10. ###  SQLite GLOB operator:
 
 - ### The `GLOB` operator is similar to the `LIKE` operator. The `GLOB` operator determines whether a string matches a specific pattern.
 
@@ -982,7 +982,7 @@ WHERE
 
 <br/>
 
-> ### 11. SQLite joins: 
+> 11. ###  SQLite joins: 
 ### To query data from two or more tables.
 ### Example: I will use the *artists* and *albums* tables:
 
@@ -1109,7 +1109,7 @@ CROSS JOIN calendars;
 
 -----------------------------------
 
-> ### 12.  SQLite inner join clause:
+> 12.  ###  SQLite inner join clause:
 ### To query data from multiple tables, you use `INNER JOIN` clause. The `INNER JOIN` clause combines columns from correlated tables.
 
 <br />
@@ -1208,7 +1208,7 @@ WHERE
 
 <br/>
 
-> ## __13. SQLite LEFT JOIN clause:__  to query data from multiple tables. 
+> 13. ## __ SQLite LEFT JOIN clause:__  to query data from multiple tables. 
 
 * ### Similar to the INNER JOIN clause, the LEFT JOIN clause is an optional clause of the SELECT statement. You use the LEFT JOIN clause to query data from multiple related tables.
 
@@ -1294,7 +1294,7 @@ WHERE
 <br />
 
 
-> ##  __14. SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
+> 14. ##  __ SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
 
 * ### If you use a `LEFT JOIN`, `INNER JOIN`, or `CROSS JOIN` without the `ON` or `USING` clause, SQLite produces the Cartesian product of the involved tables. The number of rows in the Cartesian product is the product of the number of rows in each involved tables.
 
