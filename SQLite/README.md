@@ -1174,4 +1174,81 @@ WHERE
 	artists.artistid = 10;
 ```
 
+
 ![52](images/52.png)
+
+<br/>
+
+> ##  __13. SQLite CROSS JOIN__: to combine two or more result sets from multiple tables.
+
+* ### If you use a `LEFT JOIN`, `INNER JOIN`, or `CROSS JOIN` without the `ON` or `USING` clause, SQLite produces the Cartesian product of the involved tables. The number of rows in the Cartesian product is the product of the number of rows in each involved tables.
+
+### - Suppose, we have two tables A and B. The following statements perform the cross join and produce a cartesian product of the rows from the A and B tables.
+
+```sql
+SELECT *
+FROM A JOIN B;
+```
+```sql
+SELECT *
+FROM A
+INNER JOIN B;
+```
+```sql
+SELECT *
+FROM A
+CROSS JOIN B;
+```
+```sql
+SELECT * 
+FROM A, B;
+```
+
+* ### Suppose, the ***A*** table has ___N___ rows and ___B___ table has ***M*** rows, the `CROSS JOIN` of these two tables will produce a result set that contains *NxM* rows.
+
+* ### Imagine that if you have the third table ***C*** with ***K*** rows, the result of the `CROSS JOIN` clause of these three tables will contain NxMxK rows, which may be very huge. Therefore, you should be very careful when using the `CROSS JOIN` clause.
+
+>> ___NOTE:___ You use the `INNER JOIN` and `LEFT JOIN` clauses more often than the `CROSS JOIN` clause. However, you will find the `CROSS JOIN` clause very useful in some cases.
+
+### - For example, when you want to have a matrix that has two dimensions filled with data completely like members and dates data in a membership database. You want to check the attendants of members for all relevant dates. In this case, you may use the `CROSS JOIN` clause as the following statement:
+
+```sql
+SELECT name,
+       date 
+FROM members
+CROSS JOIN dates;
+```
+
+> ### CROSS JOIN clause example:
+
+<br/>
+
+### -  The following statements create the ***ranks*** and ***suits*** tables that store the ranks and suits for a deck of cards and insert the complete data into these two tables.
+
+```sql
+CREATE TABLE ranks (
+    rank TEXT NOT NULL
+);
+
+CREATE TABLE suits (
+    suit TEXT NOT NULL
+);
+
+INSERT INTO ranks(rank) 
+VALUES('2'),('3'),('4'),('5'),('6'),('7'),('8'),('9'),('10'),('J'),('Q'),('K'),('A');
+
+INSERT INTO suits(suit) 
+VALUES('Clubs'),('Diamonds'),('Hearts'),('Spades');
+```
++ ###  The following statement uses the `CROSS JOIN` clause to return a complete deck of cards data:
+
+```sql
+SELECT rank,
+       suit
+  FROM ranks
+       CROSS JOIN
+       suits
+ORDER BY suit;
+```
+![56](images/56.png)
+![57](images/57.png)
