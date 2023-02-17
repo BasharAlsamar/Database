@@ -1,10 +1,32 @@
-# **contents**:
+- # **contents**:
 * [What is SQLite](#What-is-SQLite) ✅
 * [Download SQLite tools](#Download-SQLite-tools) ✅
+* [Run SQLite tools](#Run-SQLite-tools) ✅
+* [SQLite Commands](#SQLite-Commands) ✅
 
+<br />
 
-:heavy_check_mark:
+- # **SQLITE TUTORIAL:**
+* [1. SQLite Select](#SQLite-Select) ✅
+* [2. SQLite ORDER BY](#SQLite-ORDER-BY) ✅
+* [3. SQLite SELECT DISTINCT](#SQLite-SELECT-DISTINCT) ✅
+* [4. SQLite WHERE clause](#SQLite-WHERE-clause) ✅
+* [5. SQLite LIMIT clause](#SQLite-LIMIT-clause) ✅
+* [6. SQLite BETWEEN Operator:](#SQLite-BETWEEN-Operator:) ✅
+* [7. SQLite IN operator](#SQLite-IN-operator) ✅
+* [8. SQLite LIKE operator](#SQLite-LIKE-operator) ✅
+* [9. SQLite IS NULL operator](#SQLite-IS-NULL-operator) ✅
+* [10. SQLite GLOB operator](#SQLite-GLOB-operator) ✅
+* [11. SQLite joins](#SQLite-joins) ✅
+* [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
+* [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
+* [14. SQLite CROSS JOIN](#SQLite-CROSS-JOIN) ☑️
 
+<br/>
+
+<br/>
+
+#  **GETTING STARTED** :
 ### **What is SQLite** ?
 #### `SQLite:` is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
