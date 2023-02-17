@@ -1,3 +1,10 @@
+# **contents**:
+* [What is SQLite](#What-is-SQLite) ✅
+* [Download SQLite tools](#Download-SQLite-tools) ✅
+
+
+:heavy_check_mark:
+
 ### **What is SQLite** ?
 #### `SQLite:` is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
@@ -1338,3 +1345,5 @@ ORDER BY suit;
 ```
 ![56](images/56.png)
 ![57](images/57.png)
+
+
