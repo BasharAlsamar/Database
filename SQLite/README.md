@@ -24,7 +24,7 @@
 * [14. SQLite CROSS Join](#SQLite-CROSS-Join) ✅
 * [15. SQLite self join](#SQLite-self-join) ✅
 * [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) ✅
-* [17. SQLite Group By](#SQLite-Group-By) 
+* [17. SQLite Group By](#SQLite-Group-By) ✅
 * [18. SQLite Having](#SQLite-Having) 
 * [19. SQLite Union](#SQLite-Union) 
 * [20. SQLite Except](#SQLite-Except)
@@ -1535,3 +1535,185 @@ WHERE d.color IS NULL;
 + ### Because SQLilte does not support the `RIGHT JOIN` clause, we use the `LEFT JOIN` clause in the second `SELECT` statement instead and switch the positions of the cats and dogs tables.
 + ### The `UNION ALL` clause retains the duplicate rows from the result sets of both queries.
 + ### The `WHERE` clause in the second `SELECT` statement removes rows that already included in the result set of the first `SELECT` statement.
+
+> 17. ## SQLite Group By:
+
+- ### The `GROUP BY` clause is an optional clause of the `SELECT` statement. The `GROUP BY` clause a selected group of rows into summary rows by values of one or more columns.
+
+- ### The `GROUP BY` clause returns one row for each group. For each group, you can apply an ***aggregate function*** such as `MIN, MAX, SUM, COUNT, or AVG` to provide more information about each group.
+
+### - The illustrate of the SQLite GROUP BY clause.
+
+```sql
+SELECT 
+    column_1,
+    aggregate_function(column_2) 
+FROM 
+    table
+GROUP BY 
+    column_1,
+    column_2;
+```
+
+* ## <ins>GROUP BY examples:
+![65](images/65.png)
+
+- ### <ins>GROUP BY clause with COUNT function:
+###  The following statement returns the album id and the number of tracks per album. It uses the `GROUP BY` clause to groups tracks by album and applies the `COUNT()` function to each group.
+
+```sql
+SELECT
+	albumid,
+	COUNT(trackid)
+FROM
+	tracks
+GROUP BY
+	albumid;
+```
+![66](images/66.png)
+
+<br />
+
+### - You can use the `ORDER BY` clause to sort the groups as follows:
+
+```sql
+SELECT
+	albumid,
+	COUNT(trackid)
+FROM
+	tracks
+GROUP BY
+	albumid
+ORDER BY COUNT(trackid) DESC;
+```
+
+![67](images/67.png)
+
+<br />
+
++ ### <ins>GROUP BY and INNER JOIN clause:
+### You can query data from multiple tables using the `INNER JOIN` clause, then use the `GROUP BY` clause to group rows into a set of summary rows.
+<br />
+
+![68](images/68.png)
+
+### - The following statement joins the tracks table with the albums table to get the album’s titles and uses the `GROUP BY` clause with the COUNT function to get the number of tracks per album.
+
+```sql
+SELECT
+	tracks.albumid,
+	title,
+	COUNT(trackid)
+FROM
+	tracks
+INNER JOIN albums ON albums.albumid = tracks.albumid
+GROUP BY
+	tracks.albumid;
+```
+
+![69](images/69.png)
+
+<br />
+
+ ### -  <ins>GROUP BY with HAVING clause:
+- ### To filter groups, you use the `GROUP BY & HAVING` clause. To get the albums that have more than 15 tracks, you use the following statement:
+
+```sql
+SELECT
+	tracks.albumid,
+	title,
+	COUNT(trackid)
+FROM
+	tracks
+INNER JOIN albums ON albums.albumid = tracks.albumid
+GROUP BY
+	tracks.albumid
+HAVING COUNT(trackid) > 15;
+```
+![70](images/70.png)
+
+ ### - <ins>GROUP BY clause with SUM function example:
+- ### You can use the `SUM` function to calculate total per group. To get total length and bytes for each album, you use the `SUM` function to calculate total milliseconds and bytes.
+
+```sql
+SELECT
+	albumid,
+	SUM(milliseconds) length,
+	SUM(bytes) size
+FROM
+	tracks
+GROUP BY
+	albumid;
+```
+![71](images/71.png)
+
+<br />
+
+### -<ins>GROUP BY with MAX, MIN, and AVG functions:
+- ### The following statement returns the album id, album title, maximum length, minimum length, and the average length of tracks in the tracks table.
+
+```sql
+SELECT
+	tracks.albumid,
+	title,
+	min(milliseconds),
+	max(milliseconds),
+	round(avg(milliseconds),2)
+FROM
+	tracks
+INNER JOIN albums ON albums.albumid = tracks.albumid
+GROUP BY
+	tracks.albumid;
+```
+![72](images/72.png)
+
+<br/>
+
+### -<ins>GROUP BY multiple columns example:
+- ### In the previous example, we have used one column in the `GROUP BY` clause. SQLite allows you to group rows by multiple columns.
+
+### - to group tracks by media type and genre, you use the following statement:
+
+```sql
+SELECT
+   MediaTypeId, 
+   GenreId, 
+   COUNT(TrackId)
+FROM
+   tracks
+GROUP BY
+   MediaTypeId, 
+   GenreId;
+```
+![73](images/73.png)
+
+<br/>
+
+### -<ins>GROUP BY date example:
+
+![74](images/74.png)
+
+<br/>
+
+### - The following statement returns the number of invoice by years.
+
+```sql
+SELECT
+   STRFTIME('%Y', InvoiceDate) InvoiceYear, 
+   COUNT(InvoiceId) InvoiceCount
+FROM
+   invoices
+GROUP BY
+   STRFTIME('%Y', InvoiceDate)
+ORDER BY
+   InvoiceYear;
+```
+![75](images/75.png)
+
+<br/>
+
+### - In this example:
+
+* ### The function `STRFTIME('%Y', InvoiceDate)` returns a year from a date string.
+* ### The `GROUP BY` clause groups the invoices by years.
+* ### The function `COUNT()` returns the number of invoice in each year.
