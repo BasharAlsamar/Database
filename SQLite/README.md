@@ -22,6 +22,24 @@
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
 * [14. SQLite CROSS Join](#SQLite-CROSS-Join) ✅
+* [15. SQLite self join](#SQLite-self-join) 
+* [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) 
+* [17. SQLite Group By](#SQLite-Group-By) 
+* [18. SQLite Having](#SQLite-Having) 
+* [19. SQLite Union](#SQLite-Union) 
+* [20. SQLite Except](#SQLite-Except)
+* [21. SQLite Intersect](#SQLite-Intersect)
+* [22. SQLite Subquery](#SQLite-Subquery)
+* [23. SQLite EXISTS](#SQLite-EXISTS)
+* [24. SQLite Case](#SQLite-Case)
+* [25. SQLite Insert](#SQLite-Insert)
+* [26. SQLite Update](#SQLite-Update)
+* [27. SQLite Delete](#SQLite-Delete)
+* [28. SQLite Replace](#SQLite-Replace)
+* [29. SQLite Delete](#SQLite-Transaction)
+
+
+
 
 <br/>
 
@@ -1378,4 +1396,72 @@ ORDER BY suit;
 ![56](images/56.png)
 ![57](images/57.png)
 
+<br />
 
+> 15. ## **SQLite self join**:
+* ### The self-join is a special kind of joins that allow you to join a table to itself using either `LEFT JOIN` or `INNER JOIN` clause. You use self-join to create a result set that joins the rows with the other rows within the same table.
+
+- ### The self-join compares values of the same or different columns in the same table. Only one table is involved in the self-join.
+
+<br />
+
+ ## - <ins>Self-join examples<ins />:
+
+ ![58](images/58.png)
+
+ <br />
+
+
+* ### The ***employees*** table stores not only employee data but also organizational data. The ReportsTo column specifies the reporting relationship between employees.
+
+* ### If an employee reports to a manager, the value of the ***ReportsTo*** column of the employee’s row is equal to the value of the ***EmployeeId*** column of the manager’s row. In case an employee does not report to anyone, the ***ReportsTo*** column is `NULL`.
+
+- ### To get the information on who is the direct report of whom, you use the following statement:
+
+```sql
+SELECT m.firstname || ' ' || m.lastname AS 'Manager',
+       e.firstname || ' ' || e.lastname AS 'Direct report' 
+FROM employees e
+INNER JOIN employees m ON m.employeeid = e.reportsto
+ORDER BY manager;
+```
+![59](images/59.png)
+
+### -  The statement used the `INNER JOIN` clause to join the employees to itself. The employees table has two roles: employees and managers.
+
+### - Because we used the `INNER JOIN` clause to join the employees table to itself, the result set does not have the row whose manager column contains a `NULL` value.
+
+>> ### ___Note:___ that the concatenation operator `||` concatenates multiple strings into a single string. In the example, we use the concatenation operator to from the full names of the employees by concatenating the first name, space, and last name.
+
+<br/>
+
+![60](images/60.png)
+
+- ### In case you want to query the CEO who does not report to anyone, you need to change the `INNER JOIN` clause to `LEFT JOIN` clause in the query above.
+
+![61](images/61.png)
+
+- ### ***Andrew Adams:*** is the CEO because he does not report anyone.
+
+<br/>
+
++ ### You can use the self-join technique to find the employees located in the same city as the following query:
+
+```sql
+SELECT DISTINCT
+	e1.city,
+	e1.firstName || ' ' || e1.lastname AS fullname
+FROM
+	employees e1
+INNER JOIN employees e2 ON e2.city = e1.city 
+   AND (e1.firstname <> e2.firstname AND e1.lastname <> e2.lastname)
+ORDER BY
+	e1.city;
+```
+![62](images/62.png)
+
+<br />
+
+### - The join condition has two expressions:
+* ### `e1.city = e2.city`: to make sure that both employees located in the same city.
+* ### `e.firstname <> e2.firstname AND e1.lastname <> e2.lastname`: to ensure that `e1` and `e2` are not the same employee with the assumption that there aren’t employees who have the same first name and last name.
