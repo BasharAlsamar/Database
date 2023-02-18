@@ -1465,3 +1465,12 @@ ORDER BY
 ### - The join condition has two expressions:
 * ### `e1.city = e2.city`: to make sure that both employees located in the same city.
 * ### `e.firstname <> e2.firstname AND e1.lastname <> e2.lastname`: to ensure that `e1` and `e2` are not the same employee with the assumption that there aren’t employees who have the same first name and last name.
+
+<be />
+
+> 16. ##  **SQLite Full Outer Join:**
+* ### is a combination of  a `LEFT JOIN` and a `RIGHT JOIN`. The result set of the full outer join has `NULL` values for every column of the table that does not have a matching row in the other table. For the matching rows, the `FULL OUTER JOIN` produces a single row with values from columns of the rows in both tables.
+
+### - The following picture illustrates the result of the FULL OUTER JOIN clause:
+
+![63](images/63.png)
