@@ -22,7 +22,7 @@
 * [12. SQLite inner join clause](#SQLite-inner-join-clause) ✅
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
 * [14. SQLite CROSS Join](#SQLite-CROSS-Join) ✅
-* [15. SQLite self join](#SQLite-self-join) 
+* [15. SQLite self join](#SQLite-self-join) ✅
 * [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) 
 * [17. SQLite Group By](#SQLite-Group-By) 
 * [18. SQLite Having](#SQLite-Having) 
