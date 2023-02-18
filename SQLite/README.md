@@ -23,7 +23,7 @@
 * [13. SQLite LEFT JOIN clause](#SQLite-LEFT-JOIN-clause) ✅
 * [14. SQLite CROSS Join](#SQLite-CROSS-Join) ✅
 * [15. SQLite self join](#SQLite-self-join) ✅
-* [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) 
+* [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) ✅
 * [17. SQLite Group By](#SQLite-Group-By) 
 * [18. SQLite Having](#SQLite-Having) 
 * [19. SQLite Union](#SQLite-Union) 
@@ -1471,6 +1471,67 @@ ORDER BY
 > 16. ##  **SQLite Full Outer Join:**
 * ### is a combination of  a `LEFT JOIN` and a `RIGHT JOIN`. The result set of the full outer join has `NULL` values for every column of the table that does not have a matching row in the other table. For the matching rows, the `FULL OUTER JOIN` produces a single row with values from columns of the rows in both tables.
 
-### - The following picture illustrates the result of the FULL OUTER JOIN clause:
+### - The following picture illustrates the result of the `FULL OUTER JOIN` clause:
 
 ![63](images/63.png)
+
+```sql
+-- create and insert data into the dogs table
+CREATE TABLE dogs (
+    type       TEXT,
+    color TEXT
+);
+
+INSERT INTO dogs(type, color) 
+VALUES('Hunting','Black'), ('Guard','Brown');
+
+-- create and insert data into the cats table
+CREATE TABLE cats (
+    type       TEXT,
+    color TEXT
+);
+
+INSERT INTO cats(type,color) 
+VALUES('Indoor','White'), 
+      ('Outdoor','Black');
+```
+
+- ### The following statement uses the `FULL OUTER JOIN` clause to query data from the dogs and cats tables.
+
+```sql
+SELECT *
+FROM dogs 
+FULL OUTER JOIN cats
+    ON dogs.color = cats.color;
+```
+![64](images/64.png)
+
+<br />
+
+>> ___NOTE:___ SQLite does not support the `RIGHT JOIN` clause and also the `FULL OUTER JOIN` clause.
+
+<br />
+
+## - <ins>Emulating SQLite full outer join:
+- ### The following statement emulates the FULL OUTER JOIN clause in SQLite:
+
+```sql
+SELECT d.type,
+         d.color,
+         c.type,
+         c.color
+FROM dogs d
+LEFT JOIN cats c USING(color)
+UNION ALL
+SELECT d.type,
+         d.color,
+         c.type,
+         c.color
+FROM cats c
+LEFT JOIN dogs d USING(color)
+WHERE d.color IS NULL;
+```
+### - How the query works:
++ ### Because SQLilte does not support the `RIGHT JOIN` clause, we use the `LEFT JOIN` clause in the second `SELECT` statement instead and switch the positions of the cats and dogs tables.
++ ### The `UNION ALL` clause retains the duplicate rows from the result sets of both queries.
++ ### The `WHERE` clause in the second `SELECT` statement removes rows that already included in the result set of the first `SELECT` statement.
