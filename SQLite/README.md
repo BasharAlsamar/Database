@@ -26,7 +26,7 @@
 * [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) ✅
 * [17. SQLite Group By](#SQLite-Group-By) ✅
 * [18. SQLite Having](#SQLite-Having) ✅
-* [19. SQLite Union](#SQLite-Union) 
+* [19. SQLite Union](#SQLite-Union) ✅
 * [20. SQLite Except](#SQLite-Except)
 * [21. SQLite Intersect](#SQLite-Intersect)
 * [22. SQLite Subquery](#SQLite-Subquery)
