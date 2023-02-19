@@ -27,7 +27,7 @@
 * [17. SQLite Group By](#SQLite-Group-By) ✅
 * [18. SQLite Having](#SQLite-Having) ✅
 * [19. SQLite Union](#SQLite-Union) ✅
-* [20. SQLite Except](#SQLite-Except)
+* [20. SQLite Except](#SQLite-Except) ✅
 * [21. SQLite Intersect](#SQLite-Intersect)
 * [22. SQLite Subquery](#SQLite-Subquery)
 * [23. SQLite EXISTS](#SQLite-EXISTS)
@@ -1922,3 +1922,77 @@ FROM customers
 ORDER BY FirstName, LastName;
 ```
 ![86](images/86.png)
+
+-----------
+
+>  20. ## SQLite Except:
+
+- ### compares the result sets of two queries and returns distinct rows from the left query that are not output by the right query.
+
+```sql
+SELECT select_list1
+FROM table1
+EXCEPT
+SELECT select_list2
+FROM table2
+```
+
+### - This query must conform to the following rules:
+
+* ### First, the number of columns in the select lists of both queries must be the same.
+- ### Second, the order of the columns and their types must be comparable.
+
+<br />
+
+### - The following statements create two tables ***t1*** and ***t2*** and insert some data into both tables:
+
+```sql
+CREATE TABLE t1(
+    v1 INT
+);
+
+INSERT INTO t1(v1)
+VALUES(1),(2),(3);
+
+CREATE TABLE t2(
+    v2 INT
+);
+INSERT INTO t2(v2)
+VALUES(2),(3),(4);
+```
+<br />
+
+### - The following statement illustrates how to use the `EXCEPT` operator to compare result sets of two queries:
+
+```sql
+SELECT v1
+FROM t1
+EXCEPT 
+SELECT v2
+FROM t2;
+```
+
+```
+- The output is 1.
+```
+
+![87](images/87.png)
+
+<br/>
+
+## -  <ins>EXCEPT examples:
+
+![88](images/88.png)
+
+ <br />
+
+- ### The following statement finds artist ids of artists who do not have any album in the ***albums*** table:
+
+```sql
+SELECT ArtistId
+FROM artists
+EXCEPT
+SELECT ArtistId
+FROM albums;
+```
+![89](images/89.png)
