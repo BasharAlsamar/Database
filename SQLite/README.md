@@ -66,12 +66,11 @@
 <br/>
 
 * # **SQLITE TOOLS:**
-* [1. SQLite Commands](#SQLite-Commands) 
-* [2. SQLite Show Tables](#SQLite-Show-Tables) 
-* [3. SQLite Describe Table](#SQLite-Describe-Table) 
-* [4. SQLite Dump](#SQLite-Dump) 
-* [5. SQLite Import CSV](#SQLite-Import-CSV) 
-* [6. SQLite Export CSV](#SQLite-Export-CSV) 
+* [1. SQLite Show Tables](#SQLite-Show-Tables) 
+* [2. SQLite Describe Table](#SQLite-Describe-Table) 
+* [3. SQLite Dump](#SQLite-Dump) 
+* [4. SQLite Import CSV](#SQLite-Import-CSV) 
+* [5. SQLite Export CSV](#SQLite-Export-CSV) 
 
 <br/>
 
@@ -2137,3 +2136,89 @@ FROM invoices
 ORDER BY CustomerId;
 ```
 ![93](images/93.png)
+
+<br/>
+
+------------------------
+
+> 27. ## SQLite Delete:
+
+ + ### allows you to delete one row, multiple rows, and all rows in a table. The syntax of the SQLite `DELETE` statement is as follows:
+
+```sql
+DELETE FROM table
+WHERE search_condition;
+```
+
+### - In this syntax:
+* ### First, specify the name of the table which you want to remove rows after the `DELETE FROM` keywords.
+* ### Second, add a search condition in the `WHERE` clause to identify the rows to remove. The `WHERE` clause is an optional part of the `DELETE` statement. If you omit the `WHERE` clause, the `DELETE` statement will delete all rows in the table.
+
+### - you can use the `ORDER BY` and `LIMIT` clause in the `DELETE` statement like the following form:
+
+```sql
+DELETE FROM table
+WHERE search_condition
+ORDER BY criteria
+LIMIT row_count OFFSET offset;
+```
+
+* ### The `ORDER BY` clause sorts the rows filtered by the preceding search_condition in the `WHERE` clause and the `LIMIT` clause specifies the number of rows that to be deleted.
+
+> ### ___NOTE:___ that when you use the `DELETE` statement without a `WHERE` clause on a table that has no triggers. SQLite will delete all rows in one shot instead of visiting and deleting each individual row. This feature is known as **truncate optimization**.
+
+<br/>
+
+## - <ins>DELETE statement examples:
+- ### create the ***artists_backup*** table and insert data into it using the following script:
+
+```sql
+-- create artists backup table
+CREATE TABLE artists_backup(
+   artistid INTEGER PRIMARY KEY AUTOINCREMENT,
+   name NVARCHAR
+);
+-- populate data from the artists table
+INSERT INTO artists_backup 
+SELECT artistid,name
+FROM artists;
+```
+- ### The following statement returns all rows from the ***artists_backup*** table:
+
+```sql
+SELECT
+	artistid,
+	name
+FROM
+	artists_backup;
+```
+![94](images/94.png)
+
+```
+ - We have 280 rows in the table.
+```
+### - To remove an artist with id 1, you use the following statement:
+
+```sql
+DELETE FROM artists_backup
+WHERE artistid = 1;
+```
+
+>> Because we use ***artistid*** to identify the artist, the statement removed exactly 1 row.
+
+<br/>
+
+### - To delete artists whose names contain the word ***Santana***:
+
+```sql
+DELETE FROM artists_backup
+WHERE name LIKE '%Santana%';
+```
+
+>> There are 9 rows whose values in the ***name*** column contain the word ***Santana*** therefore, these 9 rows were deleted.
+
+### - To remove all rows in the ***artists_backup*** table, you just need to omit the `WHERE` clause as the following statement:
+
+```sql
+DELETE FROM artists_backup;
+```
