@@ -1813,3 +1813,112 @@ HAVING
 	length > 60000000;
 ```
 ![80](images/80.png)
+
+------------------
+
+> 19. ## SQLite Union:
+### - to combine data from multiple tables into a complete result set. It may be for tables with similar data within the same database or maybe you need to combine similar data from multiple databases. 
+
+### - To combine rows from two or more queries into a single result set, you use SQLite `UNION` operator. The following illustrates the basic syntax of the `UNION` operator:
+
+```bsah
+query_1
+UNION [ALL]
+query_2
+UNION [ALL]
+query_3
+...;
+```
+
+ - ### Both `UNION` and `UNION ALL` operators combine rows from result sets into a single result set. The `UNION` operator removes eliminate duplicate rows, whereas the `UNION ALL` operator does not.
+
+- ### Because the `UNION ALL` operator does not remove duplicate rows, it runs faster than the `UNION` operator.
+
+### - There are rules to union data:
+
++ ### The number of columns in all queries must be the same.
++ ### The corresponding columns must have compatible data types.
++ ### The column names of the first query determine the column names of the combined result set.
++ ### The `GROUP BY` and `HAVING` clauses are applied to each individual query, not the final result set.
++ ### `The ORDER BY clause is applied to the combined result set, not within the individual result set.`
+
+>> ### ___Note:___ that the difference between `UNION` and `JOIN` e.g., `INNER JOIN` or `LEFT JOIN` is that the `JOIN` clause combines columns from multiple related tables, while `UNION` combines rows from multiple similar tables.
+
+- ### Suppose we have two tables t1 and t2 with the following structures:
+
+```sql
+CREATE TABLE t1(
+    v1 INT
+);
+ 
+INSERT INTO t1(v1)
+VALUES(1),(2),(3);
+ 
+CREATE TABLE t2(
+    v2 INT
+);
+INSERT INTO t2(v2)
+VALUES(2),(3),(4);
+```
+
+- ### The following statement combines the result sets of the t1 and t2 table using the `UNION` operator:
+
+```sql
+SELECT v1
+  FROM t1
+UNION
+SELECT v2
+  FROM t2;
+```
+![81](images/81.png)
+
+### - the illustrates for `UNION` operation of t1 and t2 tables:
+
+![82](images/82.png)
+
+### - The following statement combines the result sets of `t1` and `t2` table using the  `UNION ALL` operator:
+
+```sql
+SELECT v1
+  FROM t1
+UNION ALL
+SELECT v2
+  FROM t2;
+```
+![83](images/83.png)
+
+### - The following picture illustrates the `UNION ALL` operation of the result sets of ***t1*** and ***t2*** tables:
+
+![84](images/84.png)
+
+<br />
+
+### <ins>1) SQLite UNION example:
+
+* ### This statement uses the `UNION` operator to combine names of employees and customers into a single list:
+
+```sql
+SELECT FirstName, LastName, 'Employee' AS Type
+FROM employees
+UNION
+SELECT FirstName, LastName, 'Customer'
+FROM customers;
+```
+![85](images/85.png)
+
+<br />
+
+
+### <ins> 2)  UNION with ORDER BY example:
+
+- ### This example uses the `UNION` operator to combine the names of the employees and customers into a single list. In addition, it uses the `ORDER BY` clause to sort the name list by first name and last name.
+
+```sql
+SELECT FirstName, LastName, 'Employee' AS Type
+FROM employees
+UNION
+SELECT FirstName, LastName, 'Customer'
+FROM customers
+ORDER BY FirstName, LastName;
+```
+![86](images/86.png)
