@@ -34,7 +34,7 @@
 * [24. SQLite Case](#SQLite-Case)
 * [25. SQLite Insert](#SQLite-Insert)
 * [26. SQLite Update](#SQLite-Update)
-* [27. SQLite Delete](#SQLite-Delete)
+* [27. SQLite Delete](#SQLite-Delete) ✅
 * [28. SQLite Replace](#SQLite-Replace)
 * [29. SQLite Delete](#SQLite-Transaction)
 
