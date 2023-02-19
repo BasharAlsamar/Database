@@ -28,7 +28,7 @@
 * [18. SQLite Having](#SQLite-Having) ✅
 * [19. SQLite Union](#SQLite-Union) ✅
 * [20. SQLite Except](#SQLite-Except) ✅
-* [21. SQLite Intersect](#SQLite-Intersect)
+* [21. SQLite Intersect](#SQLite-Intersect) ✅
 * [22. SQLite Subquery](#SQLite-Subquery)
 * [23. SQLite EXISTS](#SQLite-EXISTS)
 * [24. SQLite Case](#SQLite-Case)
@@ -38,11 +38,57 @@
 * [28. SQLite Replace](#SQLite-Replace)
 * [29. SQLite Delete](#SQLite-Transaction)
 
+<br />
 
+* # **SQLITE DATA DEFINITION:**
+* [1. SQLite Data Types](#SQLite-Data-Types) 
+* [2. SQLite Date & Time](#SQLite-Date-&-Time) 
+* [3. SQLite Create Table](#SQLite-Create-Table) 
+* [4. SQLite Primary Key](#SQLite-Primary-Key) 
+* [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
+* [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) 
+* [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) 
+* [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) 
+* [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) 
+* [10. SQLite Alter Table](#SQLite-Alter-Table) 
+* [11. SQLite Rename Column](#SQLite-Rename-Column) 
+* [12. SQLite Drop Table](#SQLite-Drop-Table) 
+* [13. SQLite Create View](#SQLite-Create-View) 
+* [14. SQLite Drop View](#SQLite-Drop-View) 
+* [15. SQLite-Index](#SQLite-Index) 
+* [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) 
+* [17. SQLite Trigger](#SQLite-Trigger) 
+* [18. SQLite VACUUM](#SQLite-VACUUM) 
+* [19. SQLite Transaction](#SQLite-Transaction) 
+* [20. SQLite Full-text Search](#SQLite-Full-text-Search) 
 
 
 <br/>
 
+* # **SQLITE TOOLS:**
+* [1. SQLite Commands](#SQLite-Commands) 
+* [2. SQLite Show Tables](#SQLite-Show-Tables) 
+* [3. SQLite Describe Table](#SQLite-Describe-Table) 
+* [4. SQLite Dump](#SQLite-Dump) 
+* [5. SQLite Import CSV](#SQLite-Import-CSV) 
+* [6. SQLite Export CSV](#SQLite-Export-CSV) 
+
+<br/>
+
+* # **SQLITE FUNCTIONS:**
+* [1. SQLite AVG](#SQLite-AVG) 
+* [2. SQLite COUNT](#SQLite-COUNT) 
+* [3. SQLite MAX](#SQLite-MAX) 
+* [4. SQLite MIN](#SQLite-MIN) 
+* [5. SQLite SUM](#SQLite-SUM) 
+
+
+<br/>
+
+* # **SQLITE INTERFACES:**
+* [1. SQLite Python](#SQLite-Python)
+
+<br/>
 <br/>
 
 #  **GETTING STARTED** :
@@ -51,8 +97,9 @@
 
 ### **What is SQLite?** 
 #### `SQLite:` is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
+<br />
 
-### Serverless
+## -  **Serverless**:
 #### Normally, an RDBMS such as MySQL, PostgreSQL, etc., requires a separate server process to operate. The applications that want to access the database server use TCP/IP protocol to send and receive requests. This is called client/server architecture.
 
 #### The following diagram illustrates the RDBMS client/server architecture:
@@ -67,6 +114,25 @@
 ### - The following diagram illustrates the SQLite server-less architecture:
 ![2](images/2.png)
 
+<br />
+
+## - **Self-Contained:**:
++ ### SQLite is self-contained means it requires minimal support from the operating system or external library. This makes SQLite usable in any environment especially in embedded devices like iPhones, Android phones, game consoles, handheld media players, etc.
+
+<br />
+
+## - **Zero-configuration:**
++ ### Because of the serverless architecture, you don’t need to “install” SQLite before using it. There is no server process that needs to be configured, started, and stopped.
+
+* ### In addition, SQLite does not use any configuration files.
+
+<br />
+
+## - **Transactional:**
+* ### All changes within a transaction take place completely or not at all even when an unexpected situation like application crash, power failure, or operating system crash occurs.
+
+<br/>
+<br/>
 
 ### Download SQLite tools:
 #### To download SQLite, you open the [download page](https://www.sqlite.org/download.html) of the SQlite official website.
@@ -1996,3 +2062,78 @@ SELECT ArtistId
 FROM albums;
 ```
 ![89](images/89.png)
+
+-------------------------------------
+> 21.  ## SQLite Intersect:
+
+### - compares the result sets of two queries and returns distinct rows that are output by both queries.
+
+<br/>
+
+- ### The following illustrates the syntax of the `INTERSECT` operator:
+
+```sql
+SELECT select_list1
+FROM table1
+INTERSECT
+SELECT select_list2
+FROM table2
+```
+
+ ### - The basic rules for combining the result sets of two queries are as follows:
+
++ ### First, the number and the order of the columns in all queries must be the same.
++ ### Second, the data types must be comparable.
+
+<br/>
+
+ ### - We will create two tables ***t1*** and ***t2*** and insert some data into both:
+
+```sql
+CREATE TABLE t1(
+    v1 INT
+);
+
+INSERT INTO t1(v1)
+VALUES(1),(2),(3);
+
+CREATE TABLE t2(
+    v2 INT
+);
+INSERT INTO t2(v2)
+VALUES(2),(3),(4);
+``` 
+
+### - The following statement illustrates how to use the `INTERSECT` operator to compare result sets of two queries:
+
+```sql
+SELECT v1
+FROM t1
+INTERSECT
+SELECT v2
+FROM t2;
+```
+
+![90](images/90.png)
+
+<br/>
+
+![91](images/91.png)
+
+<br/>
+
+## - <ins>INTERSECT example:
+
+![92](images/92.png)
+
+- ### The following statement finds customers who have invoices:
+
+```sql
+SELECT CustomerId
+FROM customers
+INTERSECT
+SELECT CustomerId
+FROM invoices
+ORDER BY CustomerId;
+```
+![93](images/93.png)
