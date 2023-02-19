@@ -25,7 +25,7 @@
 * [15. SQLite self join](#SQLite-self-join) ✅
 * [16. SQLite Full Outer Join](#SQLite-Full-Outer-Join) ✅
 * [17. SQLite Group By](#SQLite-Group-By) ✅
-* [18. SQLite Having](#SQLite-Having) 
+* [18. SQLite Having](#SQLite-Having) ✅
 * [19. SQLite Union](#SQLite-Union) 
 * [20. SQLite Except](#SQLite-Except)
 * [21. SQLite Intersect](#SQLite-Intersect)
@@ -1717,3 +1717,99 @@ ORDER BY
 * ### The function `STRFTIME('%Y', InvoiceDate)` returns a year from a date string.
 * ### The `GROUP BY` clause groups the invoices by years.
 * ### The function `COUNT()` returns the number of invoice in each year.
+
+
+----------------------------------------------
+
+> 18. ## SQLite Having:
+- ### is specifies a search condition for a group.
++ ###  useing the `HAVING` clause with the `GROUP BY` clause. The `GROUP BY` clause groups a set of rows into a set of summary rows or groups. Then the `HAVING` clause filters groups based on a specified condition.
+
+>> ### * ___NOTE:___ that the `HAVING` clause is applied after `GROUP BY` clause, whereas the `WHERE` clause is applied before the `GROUP BY` clause. And use the `HAVING` clause, you must include the `GROUP BY` clause.
+
+```sql
+SELECT
+	column_1, 
+        column_2,
+	aggregate_function (column_3)
+FROM
+	table
+GROUP BY
+	column_1,
+        column_2
+HAVING
+	search_condition;
+```
+
+### - <ins> HAVING clause examples:
+
+![76](images/76.png)
+
+<br />
+
+### - To find the number of tracks for each album, you use `GROUP BY` clause as follows:
+
+```sql
+SELECT
+	albumid,
+	COUNT(trackid)
+FROM
+	tracks
+GROUP BY
+	albumid;
+```
+
+![77](images/77.png)
+
+<br />
+
+### - To find the numbers of tracks for the album with id 1, we add a ``HAVING`` clause to the following statement:
+
+```sql
+SELECT
+	albumid,
+	COUNT(trackid)
+FROM
+	tracks
+GROUP BY
+	albumid
+HAVING albumid = 1;
+```
+![78](images/78.png)
+
+### - To find albums that have the number of tracks between 18 and 20, you use the aggregate function in the `HAVING` clause as shown in the following statement:
+
+```sql
+SELECT
+   albumid,
+   COUNT(trackid)
+FROM
+   tracks
+GROUP BY
+   albumid
+HAVING 
+   COUNT(albumid) BETWEEN 18 AND 20
+ORDER BY albumid;
+```
+![79](images/79.png)
+
+<br />
+
+### -  <ins>HAVING clause with INNER JOIN example:
+
++ ### The following statement queries data from ***tracks*** and ***albums*** tables using `inner join` to find albums that have the total length greater than 60,000,000 milliseconds.
+
+```sql
+SELECT
+	tracks.AlbumId,
+	title,
+	SUM(Milliseconds) AS length
+FROM
+	tracks
+INNER JOIN albums ON albums.AlbumId = tracks.AlbumId
+GROUP BY
+	tracks.AlbumId 
+HAVING
+	length > 60000000;
+```
+![80](images/80.png)
