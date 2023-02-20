@@ -34,7 +34,7 @@
 * [21. SQLite Intersect](#SQLite-Intersect) ✅
 * [22. SQLite Subquery](#SQLite-Subquery) ✅
 * [23. SQLite EXISTS](#SQLite-EXISTS) ✅
-* [24. SQLite Case](#SQLite-Case)
+* [24. SQLite Case](#SQLite-Case) ✅
 * [25. SQLite Insert](#SQLite-Insert)
 * [26. SQLite Update](#SQLite-Update)
 * [27. SQLite Delete](#SQLite-Delete) ✅
