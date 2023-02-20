@@ -2141,6 +2141,177 @@ ORDER BY CustomerId;
 
 ------------------------
 
+> 22. ## SQLite Subquery:
+### is a `SELECT` statement nested in another statement. See the following statement.
+
+```sql
+SELECT column_1
+FROM table_1
+WHERE column_1 = (
+   SELECT column_1 
+   FROM table_2
+);
+```
+
+### - The following query is the outer query:
+
+```sql
+SELECT column_1
+  FROM table_1
+ WHERE colum_1 =
+```
+
+### - And the following query is the subquery.
+
+```sql
+(SELECT column_1
+  FROM table_2)
+```
+
+## - <ins>subquery examples:
+
+![95](images/95.png)
+
+<br />
+
+## 1) <ins>SQLite subquery in the WHERE clause example:
+
+### - The following statement returns all the tracks in the album with the title  ***Let There Be Rock***
+
+```sql
+SELECT trackid,
+       name,
+       albumid
+FROM tracks
+WHERE albumid = (
+   SELECT albumid
+   FROM albums
+   WHERE title = 'Let There Be Rock'
+);
+```
+![96](images/96.png)
+
+<br />
+
+- ### The subquery returns the ***id*** of the album with the title ***'Let There Be Rock'***. The query uses the equal operator (`=`) to compare ***albumid*** returned by the subquery with the  ***albumid*** in the ***tracks*** table.
+
+>> ### ___NOTE:___ If the subquery returns multiple values, you can use the `IN` operator to check for the existence of a single value against a set of value.
+
+<br />
+
+![97](images/97.png)
+
+<br />
+
+### - The following query returns the customers whose sales representatives are in Canada.
+
+```sql
+SELECT customerid,
+       firstname,
+       lastname
+  FROM customers
+ WHERE supportrepid IN (
+           SELECT employeeid
+             FROM employees
+            WHERE country = 'Canada'
+       );
+```
+![98](images/98.png)
+
+>> ___NOTE:___ The subquery returns a list of ids of the employees who locate in Canada. The outer query uses the `IN` operator to find the customers who have the sales representative id in the list.
+
+## <ins>2) SQLite subquery in the FROM clause example:
+- ### Sometimes you want to apply aggregate functions to a column multiple times. For example, first, you want to sum the size of an album and then calculate the average size of all albums. You may come up with the following query.
+
+```sql
+SELECT AVG(SUM(bytes) 
+FROM tracks
+GROUP BY albumid;
+```
+
+```
+This query is not valid.
+```
+
+### - To fix it, you can use a subquery in the `FROM` clause as follows:
+
+```sql
+SELECT
+	AVG(album.size)
+FROM
+	(
+		SELECT
+			SUM(bytes) SIZE
+		FROM
+			tracks
+		GROUP BY
+			albumid
+	) AS album;
+```
+
+```
+AVG(album.size)
+---------------
+  338288920.317
+```
+
+>> ### In this case, SQLite first executes the subquery in the FROM clause and returns a result set. Then, SQLite uses this result set as a derived table in the outer query.
+
+<br />
+
+## - <ins>correlated subquery:
+
+- ### All the subqueries you have seen so far can be executed independently. In other words, it does not depend on the outer query.
+
+- ### The correlated subquery is a subquery that uses the values from the outer query. Unlike an ordinal subquery, a correlated subquery cannot be executed independently.
+
+- ## The correlated subquery is not efficient because it is evaluated for each row processed by the outer query.
+
+### - The following query uses a correlated subquery to return the albums whose size is less than 10MB.
+
+```sql
+SELECT albumid,
+       title
+  FROM albums
+ WHERE 10000000 > (
+                      SELECT sum(bytes) 
+                        FROM tracks
+                       WHERE tracks.AlbumId = albums.AlbumId
+                  )
+ ORDER BY title;
+```
+
+![99](images/99.png)
+
+###  - How the query works.
+
+* ### For each row processed in the outer query, the correlated subquery calculates the size of the albums from the tracks that belong the current album using the SUM function.
+* ### The predicate in the `WHERE` clause filters the albums that have the size greater than or equal 10MB (10000000 bytes).
+
+<br />
+
+
+## - <ins>correlated subquery in the SELECT clause example:
+* ### The following query uses a correlated subquery in the `SELECT` clause to return the number of tracks in an album.
+
+```sql
+SELECT albumid,
+       title,
+       (
+           SELECT count(trackid) 
+             FROM tracks
+            WHERE tracks.AlbumId = albums.AlbumId
+       )
+       tracks_count
+  FROM albums
+ ORDER BY tracks_count DESC;
+```
+
+![100](images/100.png)
+
+<br />
+
+
 > 27. ## SQLite Delete:
 
  + ### allows you to delete one row, multiple rows, and all rows in a table. The syntax of the SQLite `DELETE` statement is as follows:
