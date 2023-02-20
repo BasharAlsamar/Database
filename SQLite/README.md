@@ -35,7 +35,7 @@
 * [22. SQLite Subquery](#SQLite-Subquery) ✅
 * [23. SQLite EXISTS](#SQLite-EXISTS) ✅
 * [24. SQLite Case](#SQLite-Case) ✅
-* [25. SQLite Insert](#SQLite-Insert)
+* [25. SQLite Insert](#SQLite-Insert) ✅
 * [26. SQLite Update](#SQLite-Update)
 * [27. SQLite Delete](#SQLite-Delete) ✅
 * [28. SQLite Replace](#SQLite-Replace)
@@ -2534,7 +2534,150 @@ FROM
  ![107](images/107.png) 
 
  <br />
- 
+
+---------------------------------------
+
+> 25. ## SQLite Insert:
+* ### To insert data into a table.
+
+- ### To insert a single row into a table, you use the following form of the `INSERT` statement:
+
+```sql
+INSERT INTO table (column1,column2 ,..)
+VALUES( value1,	value2 ,...);
+```
+
+### - Let’s examine the INSERT statement in more detail:
+
+- ### First, specify the name of the table to which you want to insert data after the `INSERT INTO` keywords.
+- ### Second, add a `comma-separated` list of columns after the table name. The column list is optional. However, it is a good practice to include the column list after the table name.
+- ### Third, add a `comma-separated` list of values after the `VALUES` keyword. If you omit the column list, you have to specify values for all columns in the value list. The number of values in the value list must be the same as the number of columns in the column list.
+
+![109](images/109.png)
+
+<br/>
+
+### - The following statement insert a new row into the artists table:
+
+```sql
+INSERT INTO artists (name)
+VALUES('Bud Powell');
+```
+### - You can verify the insert operation by using the following `SELECT` statement:
+
+```sql
+SELECT
+	ArtistId,
+	Name
+FROM
+	Artists
+ORDER BY
+	ArtistId DESC
+LIMIT 1;
+```
+![110](images/110.png)
+
+<br />
+
+# - <ins> SQLite INSERT – Inserting multiple rows into a table:
+- ### To insert multiple rows into a table, you use the following form of the `INSERT statement`:
+
+```sql
+INSERT INTO table1 (column1,column2 ,..)
+VALUES 
+   (value1,value2 ,...),
+   (value1,value2 ,...),
+    ...
+   (value1,value2 ,...);
+```
++ ### Each value list following the `VALUES` clause is a row that will be inserted into the table.
+
+### - The following example inserts three rows into the artists table:
+
+```sql
+INSERT INTO artists (name)
+VALUES
+	("Buddy Rich"),
+	("Candido"),
+	("Charlie Byrd");
+```
+
+### -  You can verify the result using the following statement:
+
+```sql
+SELECT
+	ArtistId,
+	Name
+FROM
+	artists
+ORDER BY
+	ArtistId DESC
+LIMIT 3;
+```
+![111](images/111.png)
+
+<br />
+
+# - <isn>SQLite INSERT – Inserting default values:
+- ### When you create a new table using the `CREATE TABLE` statement, you can specify default values for columns, or a `NULL` if a default value is not specified.
+
+- ### The third form of the `INSERT` statement is `INSERT DEFAULT VALUES`, which inserts a new row into a table using the default values specified in the column definition or `NULL` if the default value is not available and the column does not have a `NOT NULL` constraint.
+
+### - The following statement inserts a new row into the artists table using INSERT DEFAULT VALUES:
+
+```sql 
+INSERT INTO artists DEFAULT VALUES;
+```
+
+###  - To verify the insert, you use the following statement:
+
+```sql
+SELECT
+	ArtistId,
+	Name
+FROM
+	artists
+ORDER BY
+	ArtistId DESC;
+```
+
+![112](images/112.png)
+
+<br />
+
+>> The default value of the ***ArtistId*** column is the next sequential integer . The name column does not have any default value, therefore, the `INSERT DEFAULT VALUES` statement inserts `NULL`  into it.
+
+# - <ins> SQLite INSERT – Inserting new rows with data provided by a SELECT statement:
+
+### - Suppose you want to backup the artists table, you can follow these steps:
+
++ ### First, create a new table named artists_backup as follows:
+
+```sql
+CREATE TABLE artists_backup(
+   ArtistId INTEGER PRIMARY KEY AUTOINCREMENT,
+   Name NVARCHAR
+);
+```
+
+### - To insert data into the artists_backup table with the data from the artists table, you use the `INSERT INTO SELECT` statement as follows:
+
+```sql
+INSERT INTO artists_backup 
+SELECT ArtistId, Name
+FROM artists;
+```
+
+### - If you query data from the artists_backup table, you will see all data in the artists table.
+
+```sql
+SELECT * FROM artists_backup;
+```
+
+![113](images/113.png)
+
+<br />
+
 ----------------------------------------
 
 > 27. ## SQLite Delete:
