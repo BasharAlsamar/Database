@@ -29,7 +29,7 @@
 * [19. SQLite Union](#SQLite-Union) ✅
 * [20. SQLite Except](#SQLite-Except) ✅
 * [21. SQLite Intersect](#SQLite-Intersect) ✅
-* [22. SQLite Subquery](#SQLite-Subquery)
+* [22. SQLite Subquery](#SQLite-Subquery) ✅
 * [23. SQLite EXISTS](#SQLite-EXISTS)
 * [24. SQLite Case](#SQLite-Case)
 * [25. SQLite Insert](#SQLite-Insert)
