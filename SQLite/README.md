@@ -38,7 +38,7 @@
 * [25. SQLite Insert](#SQLite-Insert) ✅
 * [26. SQLite Update](#SQLite-Update) ✅
 * [27. SQLite Delete](#SQLite-Delete) ✅
-* [28. SQLite Replace](#SQLite-Replace)
+* [28. SQLite Replace](#SQLite-Replace) ✅
 * [29. SQLite Transaction](#SQLite-Transaction)
 
 <br />
@@ -2926,3 +2926,99 @@ WHERE name LIKE '%Santana%';
 ```sql
 DELETE FROM artists_backup;
 ```
+<br />
+
+----------------------------------
+> 28. ## SQLite Replace: 
+- ### The idea of the REPLACE statement is that when a `UNIQUE` or `PRIMARY KEY` constraint violation occurs, it does the following:
+
+- ### First, delete the existing row that causes a constraint violation.
+- ### Second, insert a new row.
+
+### - The following illustrates the syntax of the REPLACE statement.
+
+```sql
+INSERT OR REPLACE INTO table(column_list)
+VALUES(value_list);
+```
+
+# - <ins>The SQLite REPLACE statement examples:
+
+1. ###  First, create a new table named ***positions***  with the following structure.
+
+```sql
+CREATE TABLE IF NOT EXISTS positions (
+	id INTEGER PRIMARY KEY,
+	title TEXT NOT NULL,
+	min_salary NUMERIC
+);
+```
+
+2. ### Second, insert some rows into the ***positions*** table.
+
+```sql
+INSERT INTO positions (title, min_salary)
+VALUES ('DBA', 120000),
+       ('Developer', 100000),
+       ('Architect', 150000);
+```
+3. ### Third, verify the insert using the following `SELECT` statement.
+
+```sql
+SELECT * FROM positions;
+```
+
+![121](images/121.png)
+
+<br />
+
+### - The following statement creates a unique index on the title column of the ***positions*** table to ensure that it doesn’t have any duplicate position title:
+
+```sql
+CREATE UNIQUE INDEX idx_positions_title 
+ON positions (title);
+```
+
+### - Suppose, you want to add a position into the ***positions*** table if it does not exist, in case the position exists, update the current one.
+
+### - The following `REPLACE` statement inserts a new row into the positions table because the position title ***Full Stack Developer*** is not in the positions table.
+
+```sql
+REPLACE INTO positions (title, min_salary)
+VALUES('Full Stack Developer', 140000);
+```
+![122](images/122.png)
+
+<br />
+
+### - See the following statement:
+
+```sql
+REPLACE INTO positions (title, min_salary)
+VALUES('DBA', 170000);
+```
+![123](images/123.png)
+
+<br />
+
+1. ### First, SQLite checked the `UNIQUE` constraint.
+
+2. ### Second, because this statement violated the `UNIQUE` constraint by trying to add the ***DBA*** title that already exists, SQLite deleted the existing row.
+
+3. ### Third, SQLite inserted a new row with the data provided by the `REPLACE` statement.
+
+> ### ___NOTE:___ that the `REPLACE` statement means `INSERT` or `REPLACE`, not `INSERT` or `UPDATE`.
+
+<br />
+
+- ### See the following statement:
+
+```sql
+REPLACE INTO positions (id, min_salary)
+VALUES(2, 110000);
+```
+### 1. First, the position with id 2 already exists, the `REPLACE` statement removes it.
+
+### 2. Then, SQLite tried to insert a new row with two columns: ***( id, min_salary)***. However, it violates the `NOT NULL` constraint of the title column. Therefore, SQLite rolls back the transaction.
+
+### - If the title column does not have the `NOT NULL` constraint, the `REPLACE` statement will insert a new row whose the title column is `NULL`.
