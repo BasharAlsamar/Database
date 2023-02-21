@@ -3194,3 +3194,119 @@ SELECT * FROM account_changes;
 ```
 
 ![128](images/128.png)
+
+<br />
+
+------------------------------------------------
+
+> ## -  ___DATA DEFINITION:___
+
+> ## 1. SQLite Data Types:
+* ### The other database systems such as ***MySQL*** and ***PostgreSQL*** use *static typing*. It means when you declare a column with a specific data type, that column can store only data of the declared data type.
+* ###  ***SQLite*** uses dynamic type system. In other words, a value stored in a column determines its data type, not the column’s data type. that is mean you don’t have to declare a specific data type for a column when you create a table. In case you declare a column with the integer data type, you can store any kind of data types such as text and BLOB, SQLite will not complain about this.
+
+<br/>
+
+### - The following table illustrates 5 storage classes in SQLite:
+<br />
+
+| Storage Class      | Meaning |
+| :---------- | :-----------: |
+| NULL        | NULL values mean missing information or unknown.|
+| INTEGER   | Integer values are whole numbers (either positive or negative). An integer can have variable sizes such as 1, 2,3, 4, or 8 bytes.|
+| REAL | Real values are real numbers with decimal values that use 8-byte|floats.|
+| TEXT |TEXT is used to store character data. The maximum length of TEXT is unlimited. SQLite supports various character encodings.|
+|BLOB| BLOB stands for a binary large object that can store any kind of data. The maximum size of BLOB is, theoretically, unlimited.|
+
+<br />
+
+### - SQLite determines the data type of a value based on its data type according to the following rules:
+
+* ### If a literal has no enclosing quotes and decimal point or exponent, SQLite assigns the `INTEGER` storage class.
++ ### If a literal is enclosed by single or double quotes, SQLite assigns the `TEXT` storage class.
+- ### If a literal does not have quote nor decimal point nor exponent, SQLite assigns `REAL` storage class.
+- ### If a literal is NULL without quotes, it assigned `NULL` storage class.
+- ### If a literal has the X’ABCD’ or x ‘abcd’, SQLite assigned `BLOB` storage class.
+
+<br/>
+
+### - SQLites provides the `typeof()` function that allows you to check the storage class of a value based on its format. See the following example:
+
+```sql
+SELECT
+	typeof(100),
+	typeof(10.0),
+	typeof('100'),
+	typeof(x'1000'),
+	typeof(NULL);
+Code language: SQL (Structured Query Language) (sql)
+```
+![129](images/129.png)
+
+<br>
+
+### - A single column in SQLite can store mixed data types. See the following example.
+
+1. ### First, create a new table named ***test_datatypes*** for testing.
+
+```sql
+CREATE TABLE test_datatypes (
+	id INTEGER PRIMARY KEY,
+	val
+);
+```
+2. ### Second, insert data into the ***test_datatypes*** table.
+
+```sql
+INSERT INTO test_datatypes (val)
+VALUES
+	(1),
+	(2),
+	(10.1),
+	(20.5),
+	('A'),
+	('B'),
+	(NULL),
+	(x'0010'),
+	(x'0011');
+```
+
+3. ### Third, use the `typeof()` function to get the data type of each value stored in the val column.
+
+```sql
+SELECT
+	id,
+	val,
+	typeof(val)
+FROM
+	test_datatypes;
+```
+
+![130](images/130.png)
+
+<br>
+
+### - When you use the `ORDER BY` clause to sort the data in a column with different storage classes, SQLite performs the following steps:
+
+1. ### First, group values based on storage class: `NULL, INTEGER, and REAL, TEXT, and BLOB`.
+2. ### Second, sort the values in each group.
+### - The following statement sorts the mixed data in the val column of the test_datatypes table:
+
+```sql
+SELECT
+	id,
+	val,
+	typeof(val)
+FROM
+	test_datatypes
+ORDER BY val;
+```
+![131](images/131.png)
+
+<br />
+
+## - <ins>SQLite manifest typing & type affinity:
+
+
+1. ### ___Manifest___ typing means that a data type is a property of a value stored in a column, not the property of the column in which the value is stored. SQLite uses manifest typing to store values of any type in a column.
+2. ### Type ___affinity___ of a column is the recommended type for data stored in that column. Note that the data type is recommended, not required, therefore, a column can store any type of data.
