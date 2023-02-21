@@ -3022,3 +3022,175 @@ VALUES(2, 110000);
 ### 2. Then, SQLite tried to insert a new row with two columns: ***( id, min_salary)***. However, it violates the `NOT NULL` constraint of the title column. Therefore, SQLite rolls back the transaction.
 
 ### - If the title column does not have the `NOT NULL` constraint, the `REPLACE` statement will insert a new row whose the title column is `NULL`.
+
+------------------------------------------------
+
+
+> 29. ## SQLite Transaction:
+- ### to ensure the integrity and reliability of the data.
+
+##  <ins>- SQLite & ACID:
+### - SQLite is a transactional database that all changes and queries are atomic, consistent, isolated, and durable (ACID).
+
+<br/>
+
+
+### - SQLite guarantees all the transactions are ACID compliant even if the transaction is interrupted by a program crash, operation system dump, or power failure to the computer.
+
+- ### **Atomic**: a transaction should be atomic. It means that a change cannot be broken down into smaller ones. When you commit a transaction, either the entire transaction is applied or not.
+- ### **Consistent**: a transaction must ensure to change the database from one valid state to another. When a transaction starts and executes a statement to modify data, the database becomes inconsistent. However, when the transaction is committed or rolled back, it is important that the transaction must keep the database consistent.
+- ### **Isolation**: a pending transaction performed by a session must be isolated from other sessions. When a session starts a transaction and executes the `INSERT` or `UPDATE` statement to change the data, these changes are only visible to the current session, not others. On the other hand, the changes committed by other sessions after the transaction started should not be visible to the current session.
+- ### **Durable**: if a transaction is successfully committed, the changes must be permanent in the database regardless of the condition such as power failure or program crash. On the contrary, if the program crashes before the transaction is committed, the change should not persist.
+
+## - <ins>SQLite transaction statements:
++ ### By default, SQLite operates in auto-commit mode. It means that for each command, SQLite starts, processes, and commits the transaction automatically.
+
+### - To start a transaction explicitly, you use the following steps:
+
+1. ### First, open a transaction by issuing the `BEGIN TRANSACTION` command.
+
+```sql
+BEGIN TRANSACTION;
+```
+
+### - After executing the statement `BEGIN TRANSACTION`, the transaction is open until it is explicitly committed or rolled back.
+
+2. #### Second, issue SQL statements to select or update data in the database. Note that the change is only visible to the current session (or client).
+
+3. ### Third, commit the changes to the database by using the `COMMIT` or `COMMIT TRANSACTION` statement.
+
+```sql
+COMMIT;
+```
+### - If you do not want to save the changes, you can roll back using the `ROLLBACK` or `ROLLBACK TRANSACTION` statement:
+
+```sql
+ROLLBACK;
+```
+
+## - <ins>SQLite transaction example:
+- ### We will create two new tables: ***accounts*** and ***account_changes*** for the demonstration.
+
++ ### The accounts table stores data about the account numbers and their balances. The account_changes table stores the changes of the accounts.
+
+### 1. First, create the accounts and account_changes tables by using the following `CREATE TABLE` statements:
+
+```sql
+CREATE TABLE accounts ( 
+	account_no INTEGER NOT NULL, 
+	balance DECIMAL NOT NULL DEFAULT 0,
+	PRIMARY KEY(account_no),
+        CHECK(balance >= 0)
+);
+
+CREATE TABLE account_changes (
+	change_no INT NOT NULL PRIMARY KEY,
+	account_no INTEGER NOT NULL, 
+	flag TEXT NOT NULL, 
+	amount DECIMAL NOT NULL, 
+	changed_at TEXT NOT NULL 
+);
+```
+### 2. Second, insert some sample data into the accounts table.
+
+```sql
+INSERT INTO accounts (account_no,balance)
+VALUES (100,20100);
+
+INSERT INTO accounts (account_no,balance)
+VALUES (200,10100);
+```
+
+### 3. Third, query data from the accounts table:
+
+```sql
+SELECT * FROM accounts;
+```
+![124](images/124.png)
+
+<br />
+
+### 4. Fourth, transfer 1000 from account 100 to 200, and log the changes to the table account_changes in a single transaction.
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE accounts
+   SET balance = balance - 1000
+ WHERE account_no = 100;
+
+UPDATE accounts
+   SET balance = balance + 1000
+ WHERE account_no = 200;
+ 
+INSERT INTO account_changes(account_no,flag,amount,changed_at) 
+VALUES(100,'-',1000,datetime('now'));
+
+INSERT INTO account_changes(account_no,flag,amount,changed_at) 
+VALUES(200,'+',1000,datetime('now'));
+
+COMMIT;
+```
+
+### 5. Fifth, query data from the accounts table:
+
+```sql
+SELECT * FROM accounts;
+```
+![125](images/125.png)
+
+<br />
+
+### 6. Sixth, query the contents of the account_changes table:
+
+```sql
+SELECT * FROM account_changes;
+```
+![126](images/126.png)
+
+<br />
+
+### - Let’s take another example of rolling back a transaction.
+
+1. ### First, attempt to deduct 20,000 from account 100:
+
+```sql
+BEGIN TRANSACTION;
+
+UPDATE accounts
+   SET balance = balance - 20000
+ WHERE account_no = 100;
+
+INSERT INTO account_changes(account_no,flag,amount,changed_at) 
+VALUES(100,'-',20000,datetime('now'));
+```
+
+### - SQLite issued an error due to not enough balance:
+
+```css
+[SQLITE_CONSTRAINT]  Abort due to constraint violation (CHECK constraint failed: accounts)
+```
+
+### - However, the log has been saved to the account_changes table:
+
+```sql
+SELECT * FROM account_changes;
+```
+
+![127](images/127.png)
+
+<br />
+
+2. ### Second, roll back the transaction by using the `ROLLBACK` statement:
+
+```sql
+ROLLBACK;
+```
+
+3. ### Finally, query data from the account_changes table, you will see that the change no #3 is not there anymore:
+
+```sql
+SELECT * FROM account_changes;
+```
+
+![128](images/128.png)
