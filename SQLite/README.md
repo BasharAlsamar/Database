@@ -3199,7 +3199,9 @@ SELECT * FROM account_changes;
 
 ------------------------------------------------
 
-> ## -  ___DATA DEFINITION:___
+## <ins> -  ___DATA DEFINITION:___
+
+<br>
 
 > ## 1. SQLite Data Types:
 * ### The other database systems such as ***MySQL*** and ***PostgreSQL*** use *static typing*. It means when you declare a column with a specific data type, that column can store only data of the declared data type.
