@@ -46,7 +46,7 @@
 * # **SQLITE DATA DEFINITION:**
 * [1. SQLite Data Types](#SQLite-Data-Types) ✅
 * [2. SQLite Date and Time](#SQLite-Date-and-Time) ✅
-* [3. SQLite Create Table](#SQLite-Create-Table) 
+* [3. SQLite Create Table](#SQLite-Create-Table) ✅
 * [4. SQLite Primary Key](#SQLite-Primary-Key) 
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) 
@@ -3410,3 +3410,259 @@ SELECT datetime(d1,'unixepoch')
 FROM datetime_int;
 ```
 ![133](images/133.png)
+
+<br />
+
+-------------------------------------------
+
+> 3. ## SQLite Create Table:
+- ### To create a new table in SQLite, you use `CREATE TABLE` statement using the following syntax:
+
+```sql
+CREATE TABLE [IF NOT EXISTS] [schema_name].table_name (
+	column_1 data_type PRIMARY KEY,
+   	column_2 data_type NOT NULL,
+	column_3 data_type DEFAULT 0,
+	table_constraints
+) [WITHOUT ROWID];
+```
+
+### - In this syntax:
+
+1. ### First, specify the name of the table that you want to create after the `CREATE TABLE` keywords. The name of the table cannot start with sqlite_ because it is reserved for the internal use of SQLite.
+2. ### Second, use `IF NOT EXISTS` option to create a new table if it does not exist. Attempting to create a table that already exists without using the `IF NOT EXISTS` option will result in an error.
+3. ### Third, optionally specify the `schema_name` to which the new table belongs. The schema can be the main database, `temp` database or any attached database.
+4. ### Fourth, specify the column list of the table. Each column has a name, data type, and the column constraint. SQLite supports `PRIMARY KEY, UNIQUE, NOT NULL, and CHECK` column constraints.
+5. ### Fifth, specify the table constraints such as PRIMARY KEY, FOREIGN KEY, UNIQUE, and CHECK constraints.
+6. ### Finally, optionally use the `WITHOUT ROWID` option. By default, a row in a table has an implicit column, which is referred to as the `rowid`, `oid` or `_rowid_` column. The `rowid` column stores a 64-bit signed integer key that uniquely identifies the row inside the table. If you don’t want SQLite creates the `rowid` column, you specify the `WITHOUT ROWID` option. A table that contains the `rowid` column is known as a `rowid` table. Note that the `WITHOUT ROWID` option is only available in SQLite 3.8.2 or later.
+
+>> ___Note:___ that the `primary` key of a table is a column or a group of columns that uniquely identify each row in the table.
+
+<br/>
+
+## - <ins>CREATE TABLE examples
+### - Suppose you have to manage contacts using SQLite.
+
+### - Each contact has the following information:
++ ### First name
++ ### Last name
++ ### Email
++ ### Phone
+### - The requirement is that the email and phone must be unique. In addition, each contact belongs to one or many groups, and each group can have zero or many contacts.
+
+### - Based on these requirements, we came up with three tables:
+
+- ### The ***contacts*** table that stores contact information.
+- ### The ***groups*** table that stores group information.
+- ### The ***contact_groups*** table that stores the relationship between contacts and groups.
+
+![134](images/134.png)
+
+<br />
+
+### - The following statement creates the contacts table.
+
+```sql
+CREATE TABLE contacts (
+	contact_id INTEGER PRIMARY KEY,
+	first_name TEXT NOT NULL,
+	last_name TEXT NOT NULL,
+	email TEXT NOT NULL UNIQUE,
+	phone TEXT NOT NULL UNIQUE
+);
+```
+
+- ### The ***contact_id*** is the primary key of the ***contacts*** table.
+
+### - Because the primary key consists of one column, you can use the column constraint.
+
+- ### The ***first_name*** and ***last_name*** columns have `TEXT` storage class and these columns are `NOT NULL`. It means that you must provide values when you insert or update rows in the contacts table.
+
+- ### The ***email*** and ***phone*** are unique therefore we use the `UNIQUE` constraint for each column.
+
+<br />
+
+### - The following statement creates the groups table:
+
+```sql
+CREATE TABLE groups (
+   group_id INTEGER PRIMARY KEY,
+   name TEXT NOT NULL
+);
+```
+
+- ### The groups table is quite simple with two columns: ***group_id*** and ***name***. The ***Group_id*** column is the `primary` key column.
+
+### - The following statement creates contact_groups table:
+
+```sql
+CREATE TABLE contact_groups(
+   contact_id INTEGER,
+   group_id INTEGER,
+   PRIMARY KEY (contact_id, group_id),
+   FOREIGN KEY (contact_id) 
+      REFERENCES contacts (contact_id) 
+         ON DELETE CASCADE 
+         ON UPDATE NO ACTION,
+   FOREIGN KEY (group_id) 
+      REFERENCES groups (group_id) 
+         ON DELETE CASCADE 
+         ON UPDATE NO ACTION
+);
+```
+### - The contact_groups table has a primary key that consists of two columns: ***contact_id*** and ***group_id***.
+
+------------------------------------------------
+
+> 4. ##  SQLite Primary Key:
+- ### A `primary` key is a column or group of columns used to identify the uniqueness of rows in a table. Each table has one and only one primary key.
+
+### - To define primary key in two ways:
+
+1. ### First, if the `primary` key has only one column, you use the `PRIMARY KEY` column constraint to define the primary key as follows:
+
+```sql
+CREATE TABLE table_name(
+   column_1 INTEGER NOT NULL PRIMARY KEY,
+   ...
+);
+```
+2. ### Second, in case primary key consists of two or more columns, you use the `PRIMARY KEY` table constraint to define the primary as shown in the following statement.
+
+```sql
+CREATE TABLE table_name(
+   column_1 INTEGER NOT NULL,
+   column_2 INTEGER NOT NULL,
+   ...
+   PRIMARY KEY(column_1,column_2,...)
+);
+```
+
+# - <isn>SQLite primary key and rowid table:
+- ### When you create a table without specifying the `WITHOUT ROWID` option, SQLite adds an implicit column called `rowid` that stores 64-bit signed integer. The `rowid` column is a key that uniquely identifies the rows in the table. Tables that have rowid columns are called rowid tables.
+
+- ### If a table has the `primary` key that consists of one column, and that column is defined as INTEGER then this primary key column becomes an alias for the rowid column.
+
+>> ___NOTE:___ that if you assign another integer type such as `BIGINT and UNSIGNED INT` to the primary key column, this column will not be an alias for the rowid column. ___Another note:___ is that if you declare a column with the `INTEGER` type and `PRIMARY KEY DESC` clause, this column will not become an alias for the rowid column:
+
+```sql
+CREATE TABLE table(
+   pk INTEGER PRIMARY KEY DESC,
+   ...
+);
+```
+# - <ins>Creating SQLite primary key examples:
+### - The following statement creates a table named ***countries*** which has ***country_id*** column as the `primary key`.
+
+```sql
+CREATE TABLE countries (
+   country_id INTEGER PRIMARY KEY,
+   name TEXT NOT NULL
+);
+```
+
+### - It is possible to use the `PRIMARY KEY` table constraint to define the primary key that consists of one column as shown in the following statement:
+
+```sql
+CREATE TABLE languages (
+   language_id INTEGER,
+   name TEXT NOT NULL,
+   PRIMARY KEY (language_id)
+);
+```
+### - The following statement creates the ***country_languages*** table whose primary key consists of two columns.
+
+```sql
+CREATE TABLE country_languages (
+	country_id INTEGER NOT NULL,
+	language_id INTEGER NOT NULL,
+	PRIMARY KEY (country_id, language_id),
+	FOREIGN KEY (country_id) REFERENCES countries (country_id) 
+            ON DELETE CASCADE ON UPDATE NO ACTION,
+	FOREIGN KEY (language_id) REFERENCES languages (language_id) 
+            ON DELETE CASCADE ON UPDATE NO ACTION
+);
+```
+
+# - <ins>Adding SQLite primary key example:
+- ### Unlike other database systems e.g., MySQL and PostgreSQL, you cannot use the `ALTER TABLE` statement to add a primary key to an existing table.
+
+### -  You need to follow these steps to work around the limitation:
+
+1. ### First, set the foreign key constarint check off.
+2. ### Next, rename the table to another table name (old_table)
+3. ### Then, create a new table (table) with exact structure of the table that you have been renamed.
+4. ### After that, copy data from the old_table to the table.
+5. ### Finally, turn on the foreign key constraint check on
+
+### - See the following statements:
+
+```sql
+PRAGMA foreign_keys=off;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE table RENAME TO old_table;
+
+-- define the primary key constraint here
+CREATE TABLE table ( ... );
+
+INSERT INTO table SELECT * FROM old_table;
+
+COMMIT;
+
+PRAGMA foreign_keys=on;
+```
+
+### - The `BEGIN TRANSACTION` starts a new transaction. It ensures that all subsequent statements execute successfully or nothing executes at all.
+
+### - The `COMMIT` statement commits all the statements.
+
+<br />
+
+
+###  - Let’s create a table name ***cities*** without a `primary` key.
+
+```sql 
+CREATE TABLE cities (
+   id INTEGER NOT NULL,
+   name text NOT NULL
+);
+
+INSERT INTO cities (id, name)
+VALUES(1, 'San Jose');
+```
+
+### - In order to add the `primary` key to the cities table, you perform the following steps:
+
+```sql
+PRAGMA foreign_keys=off;
+
+BEGIN TRANSACTION;
+
+ALTER TABLE cities RENAME TO old_cities;
+
+CREATE TABLE cities (
+   id INTEGER NOT NULL PRIMARY KEY,
+   name TEXT NOT NULL
+);
+
+INSERT INTO cities 
+SELECT * FROM old_cities;
+
+DROP TABLE old_cities;
+
+COMMIT;
+
+PRAGMA foreign_keys=on;
+```
+
+### - If you use SQLite GUI tool, you can use the following statement to show the table’s information.
+
+```sql
+PRAGMA table_info([cities]);
+```
+
+![135](images/135.png)
+
+<br />
