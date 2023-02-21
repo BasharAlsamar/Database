@@ -45,7 +45,7 @@
 
 * # **SQLITE DATA DEFINITION:**
 * [1. SQLite Data Types](#SQLite-Data-Types) ✅
-* [2. SQLite Date & Time](#SQLite-Date-&-Time) ✅
+* [2. SQLite Date and Time](#SQLite-Date-and-Time) ✅
 * [3. SQLite Create Table](#SQLite-Create-Table) 
 * [4. SQLite Primary Key](#SQLite-Primary-Key) 
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
@@ -3315,7 +3315,7 @@ ORDER BY val;
 
 ---------------------------------
 
-> 2. ## SQLite Date & Time:
+> 2. ## SQLite Date and Time:
 
 ### - SQLite does not support built-in date and/or time storage class. Instead, it leverages some built-in date and time functions to use other storage classes such as `TEXT`, `REAL`, or `INTEGER` for storing the date and time values.
 
