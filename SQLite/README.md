@@ -47,7 +47,7 @@
 * [1. SQLite Data Types](#SQLite-Data-Types) ✅
 * [2. SQLite Date and Time](#SQLite-Date-and-Time) ✅
 * [3. SQLite Create Table](#SQLite-Create-Table) ✅
-* [4. SQLite Primary Key](#SQLite-Primary-Key) 
+* [4. SQLite Primary Key](#SQLite-Primary-Key) ✅
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) 
 * [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) 
