@@ -39,7 +39,7 @@
 * [26. SQLite Update](#SQLite-Update) ✅
 * [27. SQLite Delete](#SQLite-Delete) ✅
 * [28. SQLite Replace](#SQLite-Replace) ✅
-* [29. SQLite Transaction](#SQLite-Transaction)
+* [29. SQLite Transaction](#SQLite-Transaction) ✅
 
 <br />
 
