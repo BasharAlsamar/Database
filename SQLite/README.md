@@ -45,7 +45,7 @@
 
 * # **SQLITE DATA DEFINITION:**
 * [1. SQLite Data Types](#SQLite-Data-Types) ✅
-* [2. SQLite Date & Time](#SQLite-Date-&-Time) 
+* [2. SQLite Date & Time](#SQLite-Date-&-Time) ✅
 * [3. SQLite Create Table](#SQLite-Create-Table) 
 * [4. SQLite Primary Key](#SQLite-Primary-Key) 
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
@@ -3312,3 +3312,101 @@ ORDER BY val;
 
 1. ### ___Manifest___ typing means that a data type is a property of a value stored in a column, not the property of the column in which the value is stored. SQLite uses manifest typing to store values of any type in a column.
 2. ### Type ___affinity___ of a column is the recommended type for data stored in that column. Note that the data type is recommended, not required, therefore, a column can store any type of data.
+
+---------------------------------
+
+> 2. ## SQLite Date & Time:
+
+### - SQLite does not support built-in date and/or time storage class. Instead, it leverages some built-in date and time functions to use other storage classes such as `TEXT`, `REAL`, or `INTEGER` for storing the date and time values.
+
+<br>
+
+## <ins> - Using the TEXT storage class for storing SQLite date and time:
+- ### If you use the `TEXT` storage class to store date and time value, you need to use the ISO8601 string format as follows:
+
+```sql
+YYYY-MM-DD HH:MM:SS.SSS
+```
+
+### - For example, `2016-01-01 10:20:05.123`
+
+<br>
+
+1. ### First, create a new table named ***datetime_text*** for demonstration:
+
+```sql
+CREATE TABLE datetime_text(
+   d1 text, 
+   d2 text
+);
+```
+
+
+### - To insert date and time values into the datetime_text table, you use the `DATETIME` function.
+
+- ### to get the current UTC date and time value, you pass the now literal string to the function as follows:
+
+```sql
+SELECT datetime('now');
+```
+
+- ### To get the local time, you pass an additional argument  localtime.
+
+```sql
+SELECT datetime('now','localtime');
+```
+
+2. ### Second, insert the date and time values into the datetime_text table as follows:
+
+```sql
+INSERT INTO datetime_text (d1, d2)
+VALUES(datetime('now'),datetime('now', 'localtime'));
+```
+
+3. ### Third, query the data from the datetime_text table.
+
+```sql
+SELECT
+	d1,
+	typeof(d1),
+	d2,
+	typeof(d2)
+FROM
+	datetime_text;
+```
+
+![132](images/132.png)
+
+<br />
+
+## <ins> -  Using INTEGER to store SQLite date and time values:
+- ### you can use the `INTEGER` storage class to store date and time values.
+
+- ### We typically use the `INTEGER` to store UNIX time which is the number of seconds since `1970-01-01 00:00:00 UTC`. See the following example:
+
+1. ### First, create a table that has one column whose data type is `INTEGER` to store the date and time values.
+
+```sql
+CREATE TABLE datetime_int (d1 int);
+```
+
+2. ### Second, insert the current date and time value into the datetime_int table.
+
+```sql
+INSERT INTO datetime_int (d1)
+VALUES(strftime('%s','now'));
+```
+
+3. ### Third, query data from the datetime_int table.
+
+```sql
+SELECT d1 FROM datetime_int;
+```
+
+### - To format the result, you can use the built-in `datetime()` function as follows:
+
+```sql
+SELECT datetime(d1,'unixepoch')
+FROM datetime_int;
+```
+![133](images/133.png)
