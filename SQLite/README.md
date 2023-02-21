@@ -44,7 +44,7 @@
 <br />
 
 * # **SQLITE DATA DEFINITION:**
-* [1. SQLite Data Types](#SQLite-Data-Types) 
+* [1. SQLite Data Types](#SQLite-Data-Types) ✅
 * [2. SQLite Date & Time](#SQLite-Date-&-Time) 
 * [3. SQLite Create Table](#SQLite-Create-Table) 
 * [4. SQLite Primary Key](#SQLite-Primary-Key) 
@@ -3203,7 +3203,7 @@ SELECT * FROM account_changes;
 
 <br>
 
-> ## 1. SQLite Data Types:
+> 1. ## SQLite Data Types:
 * ### The other database systems such as ***MySQL*** and ***PostgreSQL*** use *static typing*. It means when you declare a column with a specific data type, that column can store only data of the declared data type.
 * ###  ***SQLite*** uses dynamic type system. In other words, a value stored in a column determines its data type, not the column’s data type. that is mean you don’t have to declare a specific data type for a column when you create a table. In case you declare a column with the integer data type, you can store any kind of data types such as text and BLOB, SQLite will not complain about this.
 
