@@ -58,12 +58,11 @@
 * [12. SQLite Drop Table](#SQLite-Drop-Table) ✅
 * [13. SQLite Create View](#SQLite-Create-View) ✅
 * [14. SQLite Drop View](#SQLite-Drop-View) ✅
-* [15. SQLite-Index](#SQLite-Index) 
+* [15. SQLite-Index](#SQLite-Index) ✅
 * [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) 
 * [17. SQLite Trigger](#SQLite-Trigger) 
 * [18. SQLite VACUUM](#SQLite-VACUUM) 
-* [19. SQLite Transaction](#SQLite-Transaction) 
-* [20. SQLite Full-text Search](#SQLite-Full-text-Search) 
+* [19. SQLite Full-text Search](#SQLite-Full-text-Search) 
 
 
 <br/>
@@ -5106,3 +5105,230 @@ DROP VIEW v_xyz;
 ```sql
 Error while executing SQL query on database 'chinook': no such view: v_xyz
 ```
+----------------------------------------------------
+> 15. ## SQLite-Index:
+
+### - What is an index?
+- ### In relational databases, a table is a list of rows. In the same time, each row has the same column structure that consists of cells. Each row also has a consecutive rowid sequence number used to identify the row. Therefore, you can consider a table as a list of pairs: (rowid, row).
+
+- ### Unlike a table, an index has an opposite relationship: (row, rowid). An index is an additional data structure that helps improve the performance of a query.
+
+![153](images/153.png)
+
+### - How does an index work?
+- ### Each index must be associated with a specific table. An index consists of one or more columns, but all columns of an index must be in the same table. A table may have multiple indexes.
+
+- ### The index contains data from the columns that you specify in the index and the corresponding ***rowid*** value. This helps SQLite quickly locate the row based on the values of the indexed columns.
+
+## - <ins>SQLite CREATE INDEX statement:
+### - To create an index, you use the `CREATE INDEX` statement with the following syntax:
+
+```sql
+CREATE [UNIQUE] INDEX index_name 
+ON table_name(column_list);
+```
+
+### - To create an index, you specify three important information:
+1. ### The name of the index after the `CREATE INDEX` keywords.
+2. ### The name of the table to the index belongs.
+3. ### A list of columns of the index.
+
+### - In case you want to make sure that values in one or more columns are unique like email and phone, you use the `UNIQUE` option in the `CREATE INDEX` statement. The `CREATE UNIQUE INDEX` creates a new unique index.
+
+<br />
+
+## - <ins>SQLite UNIQUE index example:
+
+### - Let’s create a new table named ***contacts***:
+
+```sql
+CREATE TABLE contacts (
+	first_name text NOT NULL,
+	last_name text NOT NULL,
+	email text NOT NULL
+);
+```
+
+### - Suppose, you want to enforce that the email is unique, you create a unique index as follows:
+
+```sql
+CREATE UNIQUE INDEX idx_contacts_email 
+ON contacts (email);
+```
+
+### - To test this:
+
+1. ### First,  insert a row into the contacts table.
+
+```sql
+INSERT INTO contacts (first_name, last_name, email)
+VALUES('John','Doe','john.doe@sqlitetutorial.net');
+```
+
+2. ### Second, insert another row with a duplicate email.
+
+```sql
+INSERT INTO contacts (first_name, last_name, email)
+VALUES('Johny','Doe','john.doe@sqlitetutorial.net');
+```
+
+### - SQLite issued an error message indicating that the unique index has been violated. Because when you inserted the second row, SQLite checked and made sure that the email is unique across of rows in ***email*** of the ***contacts*** table.
+
+<br />
+
+### - Let’s insert two more rows into the contacts table.
+
+```sql
+INSERT INTO contacts (first_name, last_name, email)
+VALUES('David','Brown','david.brown@sqlitetutorial.net'),
+      ('Lisa','Smith','lisa.smith@sqlitetutorial.net');
+```
+
+### - If you query data from the ***contacts*** table based on a specific email, SQLite will use the index to locate the data. See the following statement:
+
+```sql
+SELECT
+	first_name,
+	last_name,
+	email
+FROM
+	contacts
+WHERE
+	email = 'lisa.smith@sqlitetutorial.net';
+```
+
+![154](images/154.png)
+
+<br />
+
+### - To check if SQLite uses the index or not, you use the `EXPLAIN QUERY PLAN` statement as follows:
+
+```sql
+EXPLAIN QUERY PLAN 
+SELECT
+	first_name,
+	last_name,
+	email
+FROM
+	contacts
+WHERE
+	email = 'lisa.smith@sqlitetutorial.net';
+```
+![155](images/155.png)
+
+<br />
+
+## - <ins>SQLite multicolumn index example:
+### - If you create an index that consists of one column, SQLite uses that column as the sort key. In case you create an index that has multiple columns, SQLite uses the additional columns as the second, third, … as the sort keys.
+
+<br />
+
+### - SQLite sorts the data on the multicolumn index by the first column specified in the CREATE INDEX statement. Then, it sorts the duplicate values by the second column, and so on.
+
+<br />
+
+### - Therefore, the column order is very important when you create a multicolumn index.
+
+<br />
+
+### - To utilize a multicolumn index, the query must contain the condition that has the same column order as defined in the index.
+
+<br />
+
+### - The following statement creates a multicolumn index on the ***first_name*** and ***last_name*** columns of the contacts ***table***:
+
+```sql
+CREATE INDEX idx_contacts_name 
+ON contacts (first_name, last_name);
+```
+
+<br />
+
+### - If you query the ***contacts*** table with one of the following conditions in the `WHERE` clause, SQLite will utilize the multicolumn index to search for data.
+
+<br />
+
+1) ###  filter data by the ***first_name*** column.
+
+```sql
+WHERE
+	first_name = 'John';
+```
+
+2) ### filter data by both ***first_name*** and ***last_name*** columns:
+
+```sql
+WHERE
+	first_name = 'John' AND last_name = 'Doe';
+```
+
+### - However, SQLite will not use the multicolumn index if you use one of the following conditions.
+
+
+1) ### filter by the last_name column only.
+
+```sql
+WHERE
+	last_name = 'Doe';
+```
+
+2) ###  filter by first_name OR last_name columns.
+
+```sql
+last_name = 'Doe' OR first_name = 'John';
+```
+
+<br />
+
+## -<ins>SQLite Show Indexes:
+
+### - To find all indexes associated with a table, you use the following command:
+
+```sql
+PRAGMA index_list('table_name');
+```
+
+### - For example, this statement shows all the indexes of the contacts table:
+
+```sql
+PRAGMA index_list('playlist_track');
+```
+![156](images/156.png)
+
+### - To get the information about the columns in an index, you use the following command:
+
+```sql
+PRAGMA index_info('idx_contacts_name');
+```
+![157](images/157.png)
+
+### - Another way to get all indexes from a database is to query from the ***sqlite_master*** table:
+
+```sql
+SELECT
+   type, 
+   name, 
+   tbl_name, 
+   sql
+FROM
+   sqlite_master
+WHERE
+   type= 'index';
+```
+
+## - <ins> SQLite DROP INDEX statement:
+### - To remove an index from a database, you use the DROP INDEX statement as follows:
+
+```sql
+DROP INDEX [IF EXISTS] index_name;
+```
+
+### - In this syntax, you specify the name of the index that you want to drop after the `DROP INDEX` keywords. The `IF EXISTS` option removes an index only if it exists.
+
+### -  to remove the ***idx_contacts_name*** index:
+
+```
+DROP INDEX idx_contacts_name;
+```
+
+### - The ***idx_contacts_name*** index is removed completely from the database.
