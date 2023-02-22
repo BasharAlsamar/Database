@@ -57,7 +57,7 @@
 * [11. SQLite Rename Column](#SQLite-Rename-Column) ✅
 * [12. SQLite Drop Table](#SQLite-Drop-Table) ✅
 * [13. SQLite Create View](#SQLite-Create-View) ✅
-* [14. SQLite Drop View](#SQLite-Drop-View) 
+* [14. SQLite Drop View](#SQLite-Drop-View) ✅
 * [15. SQLite-Index](#SQLite-Index) 
 * [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) 
 * [17. SQLite Trigger](#SQLite-Trigger) 
