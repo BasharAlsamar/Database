@@ -51,7 +51,7 @@
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) ✅
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) ✅
 * [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) ✅
-* [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) 
+* [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) ✅
 * [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) 
 * [10. SQLite Alter Table](#SQLite-Alter-Table) 
 * [11. SQLite Rename Column](#SQLite-Rename-Column) 
