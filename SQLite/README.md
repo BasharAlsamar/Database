@@ -55,7 +55,7 @@
 * [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) ✅
 * [10. SQLite Alter Table](#SQLite-Alter-Table) ✅
 * [11. SQLite Rename Column](#SQLite-Rename-Column) 
-* [12. SQLite Drop Table](#SQLite-Drop-Table) 
+* [12. SQLite Drop Table](#SQLite-Drop-Table) ✅
 * [13. SQLite Create View](#SQLite-Create-View) 
 * [14. SQLite Drop View](#SQLite-Drop-View) 
 * [15. SQLite-Index](#SQLite-Index) 
@@ -4765,3 +4765,99 @@ SELECT * FROM users;
 2. ### Use `ALTER TABLE table_name RENAME TO new_name` statement to rename a table.
 3. ### Use `ALTER TABLE table_name ADD COLUMN column_definition` statement to add a column to a table.
 4. ### Use `ALTER TABLE table_name RENAME COLUMN current_name TO new_name` to rename a column.
+
+-------------------------------------
+
+> 12. ##  SQLite Drop Table:
+### - To remove a table in a database, you use SQLite DROP TABLE statement.
+
+```sql
+DROP TABLE [IF EXISTS] [schema_name.]table_name;
+```
+
+### - In this syntax, you specify the name of the table which you want to remove after the `DROP TABLE` keywords.
+
+### - If you want to remove a table in a specific database, you use the `[schema_name.]` explicitly.
+
+### - In case the table has dependent objects such as ***triggers*** and ***indexes***, the `DROP TABLE` statement also removes all the dependent objects.
+
+### - If the foreign key constraints enabled and you perform the `DROP TABLE` statement, before SQLite performs the implicit `DELETE` statement, it carries the foreign key constraints check. If a foreign key constraint violation occurs, SQLite issues an error message and will not drop the table.
+
+>> ___NOTE:___ that the `DROP TABLE` statement deletes the table from the database and the file on disk completely. You will not be able to undo or recover from this action. Therefore, you should perform the `DROP TABLE` statement with extra caution.
+
+## - <ins >SQLite DROP TABLE statement examples:
+ ### + we will create two tables: ***people*** and ***addresses***. Each person has one address. And one address can be shared by multiple people.
+
+###  1. First, create the tables:
+
+```sql
+CREATE TABLE IF NOT EXISTS people (
+   person_id INTEGER PRIMARY KEY,
+   first_name TEXT,
+   last_name TEXT,
+   address_id INTEGER,
+   FOREIGN KEY (address_id) 
+      REFERENCES addresses (address_id)
+);
+
+CREATE TABLE IF NOT EXISTS addresses (
+   address_id INTEGER PRIMARY KEY,
+   house_no TEXT,
+   street TEXT,
+   city TEXT,
+   postal_code TEXT,
+   country TEXT
+);
+```
+![151](images/151.png)
+
+<br />
+
+### 2. Second, insert an address and a person into the ***addresses*** and ***people*** tables.
+
+
+```sql
+INSERT INTO addresses ( house_no, street, city, postal_code, country ) 
+VALUES ( '3960', 'North 1st Street', 'San Jose ', '95134', 'USA ' ); 
+INSERT INTO people ( first_name, last_name, address_id ) 
+VALUES ('John', 'Doe', 1);
+```
+
+### 3. Third, use the `DROP TABLE` statement to remove the ***addresses*** table.
+
+```sql
+DROP TABLE addresses;
+```
+
+### - SQLite issued an error message:
+
+```
+constraint failed
+```
+
+### - Because this action violates the foreign key constraint.
+
+<br />
+
+### - To remove the addresses table, you have to:
+
+1. ### Disable foreign key constraints.
+2. ### Drop the ***addresses*** table.
+3. ### Update the ***address_id*** in the ***people*** table to `NULL` values.
+4. ### Enable the foreign key constraints.
+
+### - See the following statements:
+
+```sql
+PRAGMA foreign_keys = OFF;
+
+DROP TABLE addresses;
+
+UPDATE people
+SET address_id = NULL;
+
+PRAGMA foreign_keys = ON;
+```
+
+### - The ***addresses*** table is removed and values of the ***address_id*** column are updated to `NULL` values.
+
