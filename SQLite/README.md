@@ -4182,3 +4182,177 @@ SELECT * FROM lists;
 <br />
 
 ------------------------------------------
+
+> 8. ## SQLite CHECK constraints:
+###  To validate data before insert or update.
+
+- ### SQLite `CHECK` constraints allow you to define expressions to test values whenever they are inserted into or updated within a column.
+
+- ### If the values do not meet the criteria defined by the expression, SQLite will issue a constraint violation and abort the statement.
+
+- ### The CHECK constraints allow you to define additional data integrity checks beyond `UNIQUE` or `NOT NULL` to suit your specific application.
+
+### - The following statement shows how to define a `CHECK` constraint at the column level:
+
+```sql
+CREATE TABLE table_name(
+    ...,
+    column_name data_type CHECK(expression),
+    ...
+);
+```
+ ### - The following statement illustrates how to define a `CHECK` constraint at the table level:
+
+```sql
+CREATE TABLE table_name(
+    ...,
+    CHECK(expression)
+);
+```
+
+### - In this syntax, whenever a row is inserted into a table or an existing row is updated, the expression associated with each `CHECK` constraint is evaluated and returned a numeric value 0 or 1.
+
+- ### If the result is zero, then a constraint violation occurred. If the result is a non-zero value or NULL, it means no constraint violation occurred.
+
+>> ___Note:___ that the expression of a CHECK constraint cannot contain a subquery.
+
+## - <ins>CHECK constraint examples:
+
+### 1) CHECK constraint at the column level example:
+
+###  - The following statement creates a new table named contacts:
+
+```sql
+CREATE TABLE contacts (
+    contact_id INTEGER PRIMARY KEY,
+    first_name TEXT    NOT NULL,
+    last_name  TEXT    NOT NULL,
+    email      TEXT,
+    phone      TEXT    NOT NULL
+                    CHECK (length(phone) >= 10) 
+);
+```
+### - In the contacts table, the phone column has a `CHECK` constraint:
+
+```sql
+CHECK (length(phone) >= 10) 
+```
+
+### - This `CHECK` constraint ensures that the values in the phone column must be at least 10 characters.
+
+- ### If you attempt to execute the following statement, you will get a constraint violation error:
+
+```sql
+INSERT INTO contacts(first_name, last_name, phone)
+VALUES('John','Doe','408123456');
+```
+
+```
+Result: CHECK constraint failed: contacts
+```
+
+### - The reason was that the phone number that you attempted to insert just has 9 characters while it requires at least 10 characters.
+
+<br />
+
+### - The following statement should work because the value in the phone column has 13 characters, which satisfies the expression in the `CHECK` constraint:
+
+```sql
+INSERT INTO contacts(first_name, last_name, phone)
+VALUES('John','Doe','(408)-123-456');
+```
+
+### 2) CHECK constraints at the table level example:
+
+### - The following statement creates a new table named `products`:
+
+```sql
+CREATE TABLE products (
+    product_id   INTEGER         PRIMARY KEY,
+    product_name TEXT            NOT NULL,
+    list_price   DECIMAL (10, 2) NOT NULL,
+    discount     DECIMAL (10, 2) NOT NULL
+                                DEFAULT 0,
+    CHECK (list_price >= discount AND 
+        discount >= 0 AND 
+        list_price >= 0) 
+);
+```
+
+### - In this example, the `CHECK` constraint is defined at the table level:
+
+```sql
+CHECK (list_price >= discount AND 
+            discount >= 0 AND 
+            list_price >= 0) 
+```
+
+### - The `CHECK` constraint ensures that ***list price*** is always greater or equal to ***discount*** and both ***discount*** and ***list price*** are greater or equal to zero.
+
+<br />
+
+### - The following statement violates the `CHECK` constraint because the discount is higher than the list price.
+
+```sql
+INSERT INTO products(product_name, list_price, discount)
+VALUES('New Product',900,1000);    
+```
+
+### - The following statement also violates the CHECK constraint because the discount is negative:
+```sql
+INSERT INTO products(product_name, list_price, discount)
+VALUES('New XFactor',1000,-10);   
+``` 
+
+## - <ins>CHECK constraints to an existing table:
+
+1. ###  First, create a new table whose structure is the same as the table that you want to add a `CHECK` constraint. The new table should also include the `CHECK` constraint:
+
+```sql
+CREATE TABLE new_table (
+    [...],
+    CHECK ([...])
+);
+```
+
+- ### To get the structure of the old table, you can use the `.schema` command. 
+
+2.  ### Second, copy data from the old table to the new table.
+
+```sql
+INSERT INTO new_table SELECT * FROM old_table;
+```
+
+3. ### Third, drop the old table:
+
+```sql
+DROP TABLE old_table;
+```
+
+4. ### Fourth, rename the new table to the old one:
+
+```sql
+ALTER TABLE new_table RENAME TO old_table;
+``` 
+
+### - To make all statements above transaction-safe, you should execute all of them within a transaction like this:
+
+```sql
+BEGIN;
+-- create a new table 
+CREATE TABLE new_table (
+    [...],
+    CHECK ([...])
+);
+-- copy data from old table to the new one
+INSERT INTO new_table SELECT * FROM old_table;
+
+-- drop the old table
+DROP TABLE old_table;
+
+-- rename new table to the old one
+ALTER TABLE new_table RENAME TO old_table;
+
+-- commit changes
+COMMIT;
+```
