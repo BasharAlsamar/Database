@@ -53,7 +53,7 @@
 * [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) ✅
 * [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) ✅
 * [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) ✅
-* [10. SQLite Alter Table](#SQLite-Alter-Table) 
+* [10. SQLite Alter Table](#SQLite-Alter-Table) ✅
 * [11. SQLite Rename Column](#SQLite-Rename-Column) 
 * [12. SQLite Drop Table](#SQLite-Drop-Table) 
 * [13. SQLite Create View](#SQLite-Create-View) 
@@ -4516,3 +4516,252 @@ VALUES('John','Smith');
 
 ----------------------------------------------
 
+> 10. ## SQLite Alter Table:
+### to change the structure of an existing table.
+
+### - Unlike SQL-standard and other database systems, SQLite supports a very limited functionality of the `ALTER TABLE` statement.
+
+<br />
+
+### -By using an SQLite `ALTER TABLE` statement, you can perform actions:
+1. ### Rename a table.
+2. ### Add a new column to a table.
+3. ### Rename a column.
+
+## -<ins> Using SQLite ALTER TABLE to rename a table:
+- ### To rename a table, you use the following `ALTER TABLE RENAME` TO statement:
+
+```sql
+ALTER TABLE existing_table
+RENAME TO new_table;
+```
+
+### - These are important points you should know before you rename a table:
+
+- ### The ALTER TABLE only renames a table within a database. You cannot use it to move the table between the attached databases.
+- ### The database objects such as indexes and triggers associated with the table will be associated with the new table.
+- ### If a table is referenced by views or statements in triggers, you must manually change the definition of views and triggers.
+
+## -<ins>example of renaming a table: 
+
+1. ### First, create a table named ***devices*** that has three columns: ***name, model, serial;*** and insert a new row into the ***devices*** table.
+
+```sql
+CREATE TABLE devices (
+   name TEXT NOT NULL,
+   model TEXT NOT NULL,
+   Serial INTEGER NOT NULL UNIQUE
+);
+
+INSERT INTO devices (name, model, serial)
+VALUES('HP ZBook 17 G3 Mobile Workstation','ZBook','SN-2015');
+```
+
+2. #### Second, use the `ALTER TABLE RENAME TO` statement to change the ***devices*** table to ***equipment*** table as follows:
+
+```sql
+ALTER TABLE devices
+RENAME TO equipment;
+```
+
+3. ### Third, query data from the ***equipment*** table to verify the `RENAME` operation.
+
+```sql
+SELECT
+	name,
+	model,
+	serial
+FROM
+	equipment;
+```
+
+## <ins>Using SQLite ALTER TABLE to add a new column to a table
+
+### - The following illustrates the syntax of `ALTER TABLE ADD COLUMN` statement:
+
+```sql
+ALTER TABLE table_name
+ADD COLUMN column_definition;
+```
+
+### - There are some restrictions on the new column:
+
+- ### The new column cannot have a `UNIQUE` or `PRIMARY KEY` constraint.
+- ### If the new column has a `NOT NULL` constraint, you must specify a default value for the column other than a `NULL` value.
+- ### The new column cannot have a default of `CURRENT_TIMESTAMP, CURRENT_DATE, and CURRENT_TIME`, or an expression.
+- ### If the new column is a foreign key and the foreign key constraint check is enabled, the new column must accept a default value `NULL`.
+
+### - For example, you can add a new column named ***location*** to the equipment ***table***:
+
+```sql
+ALTER TABLE equipment 
+ADD COLUMN location text;
+```
+
+## <ins>Using SQLite ALTER TABLE to rename a column:
+
+### - The following shows the syntax of the `ALTER TABLE RENAME COLUMN` statement:
+
+```sql
+ALTER TABLE table_name
+RENAME COLUMN current_name TO new_name;
+```
+
+## <ins> Using SQLite ALTER TABLE for other actions:
+### - If you want to perform other actions e.g., drop a column, you use the following steps:
+
+![147](images/147.png)
+
+<br />
+
+### - The following script illustrates the steps above:
+
+```sql
+-- disable foreign key constraint check
+PRAGMA foreign_keys=off;
+
+-- start a transaction
+BEGIN TRANSACTION;
+
+-- Here you can drop column
+CREATE TABLE IF NOT EXISTS new_table( 
+   column_definition,
+   ...
+);
+-- copy data from the table to the new_table
+INSERT INTO new_table(column_list)
+SELECT column_list
+FROM table;
+
+-- drop the table
+DROP TABLE table;
+
+-- rename the new_table to the table
+ALTER TABLE new_table RENAME TO table; 
+
+-- commit the transaction
+COMMIT;
+
+-- enable foreign key constraint check
+PRAGMA foreign_keys=on;
+```
+<br/>
+
+### - <ins>SQLite ALTER TABLE DROP COLUMN example:
+
+### - The following script creates two tables ***users*** and ***favorites***, and insert data into these tables:
+
+```sql
+CREATE TABLE users(
+	UserId INTEGER PRIMARY KEY,
+	FirstName TEXT NOT NULL,
+	LastName TEXT NOT NULL,
+	Email TEXT NOT NULL,
+	Phone TEXT NOT NULL
+);
+
+CREATE TABLE favorites(
+	UserId INTEGER,
+	PlaylistId INTEGER,
+	FOREIGN KEY(UserId) REFERENCES users(UserId),
+	FOREIGN KEY(PlaylistId) REFERENCES playlists(PlaylistId)
+);
+
+INSERT INTO users(FirstName, LastName, Email, Phone)
+VALUES('John','Doe','john.doe@example.com','408-234-3456');
+
+INSERT INTO favorites(UserId, PlaylistId)
+VALUES(1,1);
+```
+
+### - The following statement returns data from the users table:
+
+```sql
+SELECT * FROM users;
+```
+
+![148](images/148.png)
+
+<br />
+
+### - And the following statement returns the data from the favorites table:
+
+```sql
+SELECT * FROM favorites;
+```
+
+![149](images/149.png)
+
+<br />
+
+### - Suppose, you want to drop the column ***phone*** of the ***users*** table.
+
+1. ### First, disable the foreign key constraint check:
+
+```sql
+PRAGMA foreign_keys=off;
+```
+
+2. ### Second, start a new transaction:
+
+```sql
+BEGIN TRANSACTION;
+```
+
+3. ### Third, create a new table to hold data of the ***users*** table except for the ***phone*** column:
+
+```sql
+CREATE TABLE IF NOT EXISTS persons (
+	UserId INTEGER PRIMARY KEY,
+	FirstName TEXT NOT NULL,
+	LastName TEXT NOT NULL,
+	Email TEXT NOT NULL
+);
+```
+
+4. # Fourth, copy data from the ***users*** to ***persons*** table:
+
+```sql
+INSERT INTO persons(UserId, FirstName, LastName, Email)
+SELECT UserId, FirstName, LastName, Email 
+FROM users;
+```
+
+5. ### Fifth, drop the users table:
+
+```sql
+DROP TABLE users;
+```
+
+6. ### Sixth, rename the persons table to users table:
+
+```sql
+ALTER TABLE persons RENAME TO users;
+```
+
+7. ### Seventh, commit the transaction:
+
+```sql
+COMMIT;
+``` 
+
+8. ### Eighth, enable the foreign key constraint check:
+
+```sql
+PRAGMA foreign_keys=on;
+```
+
+### - Here is the ***users*** table after dropping the ***phone*** column:
+
+```sql
+SELECT * FROM users;
+```
+![150](images/150.png)
+
+<br />
+
+ ## - Summary:
+1. ### Use the `ALTER TABLE` statement to modify the structure of an existing table.
+2. ### Use `ALTER TABLE table_name RENAME TO new_name` statement to rename a table.
+3. ### Use `ALTER TABLE table_name ADD COLUMN column_definition` statement to add a column to a table.
+4. ### Use `ALTER TABLE table_name RENAME COLUMN current_name TO new_name` to rename a column.
