@@ -54,9 +54,9 @@
 * [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) ✅
 * [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) ✅
 * [10. SQLite Alter Table](#SQLite-Alter-Table) ✅
-* [11. SQLite Rename Column](#SQLite-Rename-Column) 
+* [11. SQLite Rename Column](#SQLite-Rename-Column) ✅
 * [12. SQLite Drop Table](#SQLite-Drop-Table) ✅
-* [13. SQLite Create View](#SQLite-Create-View) 
+* [13. SQLite Create View](#SQLite-Create-View) ✅
 * [14. SQLite Drop View](#SQLite-Drop-View) 
 * [15. SQLite-Index](#SQLite-Index) 
 * [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) 
@@ -4767,6 +4767,84 @@ SELECT * FROM users;
 4. ### Use `ALTER TABLE table_name RENAME COLUMN current_name TO new_name` to rename a column.
 
 -------------------------------------
+> 11. ##  SQLite Rename Column:
+
+### -  SQLite added support for renaming column since version 3.25.0
+
+<br/>
+
+```sql
+ALTER TABLE table_name
+RENAME COLUMN current_name TO new_name;
+``` 
+###  - In this syntax:
+
+1. ### First, specify the name of the table after the `ALTER TABLE` keywords.
+
+2. ### Second, specify the name of the column that you want to rename after the `RENAME COLUMN` keywords and the new name after the `TO` keyword.
+
+## - <ins> ALTER TABLE RENAME COLUMN example:
+
+## 1. First, create a new table called ***Locations***:
+
+```sql
+CREATE TABLE Locations(
+	LocationId INTEGER PRIMARY KEY,
+	Address TEXT NOT NULL,
+	City TEXT NOT NULL,
+	State TEXT NOT NULL,
+	Country TEXT NOT NULL
+);
+```
+
+### 2. Second, insert a new row into the ***Locations*** table by using the `INSERT` statement:
+
+```sql
+INSERT INTO Locations(Address,City,State,Country)
+VALUES('3960 North 1st Street','San Jose','CA','USA');
+```
+
+### 3. Third, rename the column ***Address*** to ***Street*** by using the `ALTER TABLE RENAME` COLUMN statement:
+
+```sql
+ALTER TABLE Locations
+RENAME COLUMN Address TO Street;
+```
+
+### 4. Fourth, query data from the ***Locations*** table:
+
+```sql
+SELECT * FROM Locations;
+```
+
+### - Output:
+
+```
+LocationId  Street                 City        State       Country
+----------  ---------------------  ----------  ----------  ----------
+1           3960 North 1st Street  San Jose    CA          USA
+```
+
+### 5. Finally, show the schema of the ***Locations*** table:
+
+```
+.schema Locations
+```
+
+### - Output:
+
+```sql
+CREATE TABLE Locations(
+        LocationId INTEGER PRIMARY KEY,
+        Street TEXT NOT NULL,
+        City TEXT NOT NULL,
+        State TEXT NOT NULL,
+        Country TEXT NOT NULL
+);
+```
+
+
+--------------------------------------
 
 > 12. ##  SQLite Drop Table:
 ### - To remove a table in a database, you use SQLite DROP TABLE statement.
@@ -4861,3 +4939,107 @@ PRAGMA foreign_keys = ON;
 
 ### - The ***addresses*** table is removed and values of the ***address_id*** column are updated to `NULL` values.
 
+-------------------------------------------------
+
+> 13. ## SQLite Create View:
+
+### - What is a view?
+
+- ### In database theory, a view is a result set of a stored query. A view is the way to pack a query into a named object stored in the database.
+
+### - A view is useful in some cases:
+
+1. ### First, views provide an abstraction layer over tables. You can add and remove the columns in the view without touching the schema of the underlying tables.
+2. #### Second, you can use views to encapsulate complex queries with joins to simplify the data access.
+
+### - SQLite view is read only. It means you cannot use `INSERT`, `DELETE`, and  `UPDATE` statements to update data in the base tables through the view.
+
+<br />
+
+## -  <ins> CREATE VIEW statement:
+### - To create a view, you use the `CREATE VIEW` statement as follows:
+
+```sql
+CREATE [TEMP] VIEW [IF NOT EXISTS] view_name[(column-name-list)]
+AS 
+   select-statement;
+```
+
+1. ###  First, specify a name for the view. The `IF NOT EXISTS` option only creates a new view if it doesn’t exist. If the view already exists, it does nothing.
+2. ### Second, use the the `TEMP` or `TEMPORARY` option if you want the view to be only visible in the current database connection. The view is called a temporary view and SQLite automatically removes the temporary view whenever the database connection is closed.
+3. ### Third, specify a  `SELECT` statement for the view. By default, the columns of the view derive from the result set of the `SELECT` statement. However, you can assign the names of the view columns that are different from the column name of the table.
+
+## - <ins>SQLite CREATE VIEW examples:
+
+###  1) Creating a view to simplify a complex query:
+
+### - The following query gets data from the ***tracks***, ***albums***, ***media_types*** and ***genres*** tables in the sample database using the `inner join` clause.
+
+```sql
+SELECT
+   trackid,
+   tracks.name,
+   albums.Title AS album,
+   media_types.Name AS media,
+   genres.Name AS genres
+FROM
+   tracks
+INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId
+INNER JOIN media_types ON media_types.MediaTypeId = tracks.MediaTypeId
+INNER JOIN genres ON genres.GenreId = tracks.GenreId;
+```
+![152](images/152.png)
+
+<br />
+
+### - To create a view based on this query, you use the following statement:
+
+```sql
+CREATE VIEW v_tracks 
+AS 
+SELECT
+	trackid,
+	tracks.name,
+	albums.Title AS album,
+	media_types.Name AS media,
+	genres.Name AS genres
+FROM
+	tracks
+INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId
+INNER JOIN media_types ON media_types.MediaTypeId = tracks.MediaTypeId
+INNER JOIN genres ON genres.GenreId = tracks.GenreId;
+```
+
+### - From now on, you can use the following simple query instead of the complex one above.
+
+```sql
+SELECT * FROM v_tracks;
+```
+
+## 2) <ins>Creating a view with custom column names:
+### - The following statement creates a view named ***v_albums*** that contains album title and the length of album in minutes:
+
+```sql
+CREATE VIEW v_albums (
+    AlbumTitle,
+    Minutes
+)
+AS
+    SELECT albums.title,
+           SUM(milliseconds) / 60000
+      FROM tracks
+           INNER JOIN
+           albums USING (
+               AlbumId
+           )
+     GROUP BY AlbumTitle;
+```
+
+### - In this example, we specified new columns for the view ***AlbumTitle*** for the ***albums.title*** column and ***Minutes*** for the expression ***SUM(milliseconds) / 60000***
+
+<br />
+
+### - This query returns data from the v_albums view:
+```sql
+SELECT * FROM v_albums;
+```
