@@ -50,7 +50,7 @@
 * [4. SQLite Primary Key](#SQLite-Primary-Key) ✅
 * [5. SQLite Foreign Key](#SQLite-Foreign-Key) ✅
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) ✅
-* [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) 
+* [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) ✅
 * [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) 
 * [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) 
 * [10. SQLite Alter Table](#SQLite-Alter-Table) 
@@ -4033,3 +4033,152 @@ VALUES(NULL);
 ```sql
 SQL Error [19]: [SQLITE_CONSTRAINT]  Abort due to constraint violation (NOT NULL constraint failed: suppliers.name)
 ```
+
+<br />
+
+----------------------------------------------
+
+> 7. ##  SQLite UNIQUE Constraint: 
+### To ensure all values in a column or a group of columns are unique.
+
+### - The following shows how to define a `UNIQUE` constraint for a column at the column level:
+
+```sql
+CREATE TABLE table_name(
+    ...,
+    column_name type UNIQUE,
+    ...
+);
+```
+
+### - Or at the table level:
+
+```sql
+CREATE TABLE table_name(
+    ...,
+    UNIQUE(column_name)
+);
+```
+
+### - The following illustrates how to define a `UNIQUE` constraint for multiple columns:
+
+```sql
+CREATE TABLE table_name(
+    ...,
+    UNIQUE(column_name1,column_name2,...)
+);
+```
+
+### - Once a `UNIQUE` constraint is defined, if you attempt to insert or update a value that already exists in the column, SQLite will issue an error and abort the operation.
+
+<br />
+
+# - <ins> UNIQUE constraint examples:
+
+## 1. <ins>UNIQUE constraint for one column example:
+
+<br/>
+
+### - The following statement creates a new table named ***contacts*** with a `UNIQUE` constraint defined for the email column:
+
+```sql
+CREATE TABLE contacts(
+    contact_id INTEGER PRIMARY KEY,
+    first_name TEXT,
+    last_name TEXT,
+    email TEXT NOT NULL UNIQUE
+);
+```
+
+###  - The following example inserts a new row into the contacts table:
+
+```sql
+INSERT INTO contacts(first_name,last_name,email)
+VALUES ('John','Doe','john.doe@gmail.com');
+``` 
+
+### - If you attempt to insert a new contact with the same email, you will get an error message:
+
+```sql
+INSERT INTO contacts(first_name,last_name,email)
+VALUES ('Johnny','Doe','john.doe@gmail.com');
+```
+- ### Here is the error message:
+
+```
+Error while executing SQL query on database 'chinook': UNIQUE constraint failed: contacts.email
+```
+## 2. UNIQUE constraint for multiple columns example:
+
+<br />
+
+### - The following statement creates the shapes table with a `UNIQUE` constraint defined for the `background_color` and `foreground_color` columns:
+
+```Sql
+CREATE TABLE shapes(
+    shape_id INTEGER PRIMARY KEY,
+    background_color TEXT,
+    foreground_color TEXT,
+    UNIQUE(background_color,foreground_color)
+);
+```
+
+### - The following statement inserts a new row into the shapes table:
+
+```sql
+INSERT INTO shapes(background_color,foreground_color)
+VALUES('red','green');
+```
+
+### - The following statement works because of no duplication violation in both background_color and foreground_color columns:
+
+```sql
+INSERT INTO shapes(background_color,foreground_color)
+VALUES('red','blue');
+``` 
+
+### - However, the following statement causes an error due to the duplicates in both background_color and foreground_color columns:
+
+```sql
+INSERT INTO shapes(background_color,foreground_color)
+VALUES('red','green');
+``` 
+
+###  - Here is the error:
+
+```
+Error while executing SQL query on database 'chinook': `UNIQUE` constraint failed: shapes.background_color, shapes.foreground_color
+```
+
+## 3. <ins> UNIQUE constraint and NULL:
+
+### - SQLite treats all `NULL` values are different, therefore, a column with a `UNIQUE` constraint can have `multiple NULL` values.
+
+### - The following statement creates a new table named ***lists*** whose email column has a `UNIQUE` constraint:
+
+```sql
+CREATE TABLE lists(
+    list_id INTEGER PRIMARY KEY,
+    email TEXT UNIQUE
+);
+```
+
+### - The following statement inserts multiple `NULL` values into the email column of the ***lists*** table:
+
+```sql
+INSERT INTO lists(email)
+VALUES(NULL),(NULL);
+```
+### - to query data from the ***lists*** table:
+
+```sql
+SELECT * FROM lists;
+```
+
+![143](images/143.png)
+
+### - As you can see, even though the email column has a `UNIQUE` constraint, it can accept `multiple NULL` values.
+
+<br />
+
+------------------------------------------
