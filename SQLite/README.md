@@ -48,7 +48,7 @@
 * [2. SQLite Date and Time](#SQLite-Date-and-Time) ✅
 * [3. SQLite Create Table](#SQLite-Create-Table) ✅
 * [4. SQLite Primary Key](#SQLite-Primary-Key) ✅
-* [5. SQLite Foreign Key](#SQLite-Foreign-Key) 
+* [5. SQLite Foreign Key](#SQLite-Foreign-Key) ✅
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) ✅
 * [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) 
 * [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) 
@@ -3666,6 +3666,319 @@ PRAGMA table_info([cities]);
 ![135](images/135.png)
 
 <br />
+
+> 5. ## SQLite Foreign Key:
+### -  To enforce the relationships between related tables.
+<br />
+
+ - ### To check whether your current version of SQLite supports foreign key constraints or not, you use the following command.
+
+```sql
+PRAGMA foreign_keys;
+```
+- ### The command returns an integer value: 1: enable, 0: disabled. If the command returns nothing, it means that your SQLite version doesn’t support foreign key constraints.
+
+- ### If the SQLite library is compiled with foreign key constraint support, the application can use the `PRAGMA foreign_keys` command to enable or disable foreign key constraints at runtime.
+
+### - To disable foreign key constraint:
+
+```sql
+PRAGMA foreign_keys = OFF;
+```
+### - To enable foreign key constraint:
+```sql
+PRAGMA foreign_keys = ON;
+```
+
+# - <ins> SQLite foreign key constraints:
+
+### - Let’s start with two tables: suppliers and supplier_groups :
+
+```Sql
+CREATE TABLE suppliers (
+	supplier_id integer PRIMARY KEY,
+	supplier_name text NOT NULL,
+	group_id integer NOT NULL
+);
+
+CREATE TABLE supplier_groups (
+	group_id integer PRIMARY KEY,
+	group_name text NOT NULL
+);
+```
+### - Assuming that each supplier belongs to one and only one supplier group. And each supplier group may have zero or many suppliers. The relationship between ***supplier_groups*** and ***suppliers*** tables is ***one-to-many***. In other words, for each row in the ***suppliers*** table, there is a corresponding row in the ***supplier_groups*** table.
+
+### - To enforce the relationship between rows in the ***suppliers*** and ***supplier_groups*** table, you use the `foreign` key constraints.
+
+- ### To add the `foreign` key constraint to the ***suppliers*** table, you change the definition of the  `CREATE TABLE` statement above as follows:
+
+```sql
+DROP TABLE suppliers;
+
+CREATE TABLE suppliers (
+    supplier_id   INTEGER PRIMARY KEY,
+    supplier_name TEXT    NOT NULL,
+    group_id      INTEGER NOT NULL,
+    FOREIGN KEY (group_id)
+       REFERENCES supplier_groups (group_id) 
+);
+```
+![142](images/142.png)
+
+<br />
+
+### - The ***supplier_groups*** table is called a parent table, which is the table that a `foreign key` references. The ***suppliers*** table is known as a child table, which is the table to which the `foreign key` constraint applies.
+
+### - The ***group_id*** column in the ***supplier_groups** table is called the *parent key*, which is a column or a set of columns in the parent table that the foreign key constraint references. Typically, the parent key is the `primary key` of the ***parent table***.
+
+### - The ***group_id*** column in the ***suppliers*** table is called the child key. Generally, the child key references to the primary key of the parent table.
+
+<br />
+
+# -<ins> foreign key constraint example:
+1. ### First, insert three rows into the ***supplier_groups*** table.
+
+```sql
+INSERT INTO supplier_groups (group_name)
+VALUES
+   ('Domestic'),
+   ('Global'),
+   ('One-Time');
+```
+
+![136](images/136.png)
+
+<br />
+
+2. ### Second, insert a new supplier into the suppliers table with the supplier group that exists in the supplier_groups table.
+
+```sql
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES ('HP', 2);
+``` 
+
+3. ### Third, attempt to insert a new supplier into the suppliers table with the supplier group that does not exist in the supplier_groups table.
+
+```sql
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('ABC Inc.', 4);
+```
+
+### - SQLite checked the foreign key constraint, rejected the change, and issued the following error message:
+
+```Sql
+[SQLITE_CONSTRAINT]  Abort due to constraint violation (FOREIGN KEY constraint failed)
+```
+
+# - <ins> foreign key constraint actions: 
+
+### - To specify how foreign key constraint behaves whenever the parent key is deleted or updated, you use the `ON DELETE` or `ON UPDATE` action as follows:
+
+```sql
+FOREIGN KEY (foreign_key_columns)
+   REFERENCES parent_table(parent_key_columns)
+      ON UPDATE action 
+      ON DELETE action;
+```
+
+
+### - SQLite supports the following actions:
+
+- ### SET NULL
+- ### SET DEFAULT
+- ### RESTRICT
+- ### NO ACTION
+- ### CASCADE
+
+<br />
+
+## 1. SET NULL:
+- ### When the parent key changes, delete or update, the corresponding child keys of all rows in the child table set to NULL.
+
+1. ### First, drop and create the table ***suppliers*** using the `SET NULL` action for the ***group_id*** foreign key:
+
+```Sql
+DROP TABLE suppliers;
+
+CREATE TABLE suppliers (
+    supplier_id   INTEGER PRIMARY KEY,
+    supplier_name TEXT    NOT NULL,
+    group_id      INTEGER,
+    FOREIGN KEY (group_id)
+    REFERENCES supplier_groups (group_id) 
+       ON UPDATE SET NULL
+       ON DELETE SET NULL
+);
+```
+
+2. ### Second, insert some rows into the suppliers table:
+
+```Sql
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('XYZ Corp', 3);
+
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('ABC Corp', 3);
+```
+
+3. ### Third, delete the supplier group id 3 from the supplier_groups table:
+
+```Sql
+DELETE FROM supplier_groups 
+WHERE group_id = 3;
+```
+
+4. ### Fourth, query data from the suppliers table.
+
+```sql
+SELECT * FROM suppliers;
+```
+![137](images/137.png)
+
+### - The values of the ***group_id*** column of the corresponding rows in the ***suppliers*** table set to `NULL`.
+
+<br/>
+
+## 2. SET DEFAULT: 
+- ### The `SET DEFAULT` action sets the value of the foreign key to the default value specified in the column definition when you create the table.
+
+- ### Because the values in the column ***group_id*** defaults to `NULL`, if you delete a row from the ***supplier_groups*** table, the values of the ***group_id*** will set to `NULL`.
+
+## 3. RESTRICT:
+- ###  The `RESTRICT` action does not allow you to change or delete values in the parent key of the parent table.
+
+1. ### First, drop and create the suppliers table with the `RESTRICT` action in the foreign key ***group_id***:
+
+```sql
+DROP TABLE suppliers;
+
+CREATE TABLE suppliers (
+    supplier_id   INTEGER PRIMARY KEY,
+    supplier_name TEXT    NOT NULL,
+    group_id      INTEGER,
+    FOREIGN KEY (group_id)
+    REFERENCES supplier_groups (group_id) 
+       ON UPDATE RESTRICT
+       ON DELETE RESTRICT
+);
+```
+
+2. ### Second, insert a row into the table suppliers with the group_id 1.
+
+```sql
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('XYZ Corp', 1);
+```
+3. ### Third, delete the supplier group with id 1 from the supplier_groups table:
+
+```sql
+DELETE FROM supplier_groups 
+WHERE group_id = 1;
+``` 
+- ### SQLite issued the following error:
+
+```css
+[SQLITE_CONSTRAINT]  Abort due to constraint violation (FOREIGN KEY constraint failed)
+```
+
+### - To fix it, you must first delete all rows from the suppliers table which has group_id 1:
+
+```sql
+DELETE FROM suppliers 
+WHERE group_id =1;
+```
+
+### - Then, you can delete the supplier group 1 from the supplier_groups table:
+
+```sql
+DELETE FROM supplier_groups 
+WHERE group_id = 1;
+```
+
+## 4. NO ACTION:
+- ###  The `NO ACTION` does not mean by-pass the foreign key constraint. It has the similar effect as the `RESTRICT`.
+
+## 5. CASCADE:
+
+- ### The `CASCADE` action propagates the changes from the parent table to the child table when you update or delete the parent key.
+
+1. ### First, insert the supplier groups into the supplier_groups table:
+
+```sql
+INSERT INTO supplier_groups (group_name)
+VALUES
+   ('Domestic'),
+   ('Global'),
+   ('One-Time');
+```
+![138](images/138.png)
+
+<br/>
+
+2. ### Second, drop and create the table suppliers with the `CASCADE` action in the foreign key group_id :
+
+```sql
+DROP TABLE suppliers;
+
+CREATE TABLE suppliers (
+    supplier_id   INTEGER PRIMARY KEY,
+    supplier_name TEXT    NOT NULL,
+    group_id      INTEGER,
+    FOREIGN KEY (group_id)
+    REFERENCES supplier_groups (group_id) 
+       ON UPDATE CASCADE
+       ON DELETE CASCADE
+);
+```
+
+3. ### Third, insert some suppliers into the table suppliers:
+
+```sql
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('XYZ Corp', 1);
+
+INSERT INTO suppliers (supplier_name, group_id)
+VALUES('ABC Corp', 2);
+``` 
+![139](images/139.png)
+
+<br/>
+
+4. ### Fourth, update group_id of the Domestic supplier group to 100:
+
+```sql
+UPDATE supplier_groups
+SET group_id = 100
+WHERE group_name = 'Domestic';
+```
+
+5. ### Fifth, query data from the table suppliers:
+
+```sql
+SELECT * FROM suppliers;
+```
+
+![140](images/140.png)
+
+- ### As you can see the value in the ***group_id*** column of the ***XYZ Corp*** in the table suppliers changed from 1 to 100 when we updated the ***group_id*** in the ***suplier_groups*** table. This is the result of `ON UPDATE CASCADE` action.
+
+6. ### Sixth, delete supplier group id 2 from the supplier_groups table:
+
+```sql
+DELETE FROM supplier_groups 
+WHERE group_id = 2;
+``` 
+7. ### Seventh, query data from the table suppliers :
+
+```sql
+SELECT * FROM suppliers;
+```
+![141](images/141.png)
+
+### - The supplier id 2 whose group_id is 2 was deleted when the supplier group id 2 was removed from the supplier_groups table. This is the effect of the `ON DELETE CASCADE` action.
+
+<br/>
+---------------------------------------------
 
 > 6. ## SQLite NOT NULL Constraint:
 ### To ensure the values in a column are not `NULL`.
