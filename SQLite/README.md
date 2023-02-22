@@ -52,7 +52,7 @@
 * [6. SQLite NOT NULL Constraint](#SQLite-NOT-NULL-Constraint) ✅
 * [7. SQLite UNIQUE Constraint](#SQLite-UNIQUE-Constraint) ✅
 * [8. SQLite CHECK constraints](#SQLite-CHECK-constraints) ✅
-* [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) 
+* [9. SQLite AUTOINCREMENT](#SQLite-AUTOINCREMENT) ✅
 * [10. SQLite Alter Table](#SQLite-Alter-Table) 
 * [11. SQLite Rename Column](#SQLite-Rename-Column) 
 * [12. SQLite Drop Table](#SQLite-Drop-Table) 
@@ -4356,3 +4356,163 @@ ALTER TABLE new_table RENAME TO old_table;
 -- commit changes
 COMMIT;
 ```
+----------------------------
+
+> 9. ## SQLite AUTOINCREMENT:
+
+## -<ins> SQLite ROWID table:
+
+- ### Whenever you create a table without specifying the WITHOUT ROWID option, you get an implicit auto-increment column called rowid. The rowid column store 64-bit signed integer that uniquely identifies a row in the table.
+
+1. ### First, create a new table named ***people*** that has two columns: ***first_name***,  and ***last_name***:
+
+```sql
+CREATE TABLE people (
+   first_name TEXT NOT NULL,
+   last_name TEXT NOT NULL
+);
+```
+
+2. ### Second, insert a row into the ***people*** table using the following `INSERT` statement:
+
+```sql
+INSERT INTO people (first_name, last_name)
+VALUES('John', 'Doe');
+```
+3. ### Third, query data from the ***people*** table using the following `SELECT` statement:
+
+```sql
+SELECT
+   rowid,
+   first_name,
+   last_name
+FROM
+   people;
+```
+
+![144](images/144.png)
+
+<br />
+
+>> ___NOTE:___ When you create a table that has an `INTEGER PRIMARY KEY` column, this column is the alias of the rowid column.
+
+### - The following statement drops table people and recreates it. This time, however, we add another column named ***person_id*** whose data type is `INTEGER` and column constraint is `PRIMARY KEY`:
+
+```sql
+DROP TABLE people;
+
+CREATE TABLE people (
+   person_id INTEGER PRIMARY KEY,
+   first_name TEXT NOT NULL,
+   last_name TEXT NOT NULL
+);
+```
+
+###  - In this case, the ***person_id*** column is actually the rowid column.
+
+### - How does SQLite assign an integer value to the ***rowid*** column?
+
+If you don’t specify the ***rowid*** value or you use a `NULL` value when you insert a new row, SQLite automatically assigns the next sequential integer, which is one larger than the largest ***rowid*** in the table. The ***rowid*** value starts at 1.
+
+<br />
+
+## - Consider another example: 
+
+### - First, create a new table named `t1` that has one column:
+
+```sql
+CREATE TABLE t1(c text);
+```
+
+### - Second, insert some rows into the t1 table:
+
+```sql
+INSERT INTO t1(c) VALUES('A');
+INSERT INTO t1(c) values('B');
+INSERT INTO t1(c) values('C');
+INSERT INTO t1(c) values('D');
+```
+
+### - Third, query data from the t1 table:
+
+```sql
+SELECT rowid, c FROM t1;
+```
+![145](images/145.png)
+
+<br />
+
+### - Fourth, delete all rows of the t1 table:
+
+```sql
+DELETE FROM t1;
+``` 
+
+### - Fifth, insert some rows into the t1 table:
+
+```sql
+INSERT INTO t1(c) values('E');
+INSERT INTO t1(c) values('F');
+INSERT INTO t1(c) values('G');
+```
+### - query data from the t1 table:
+
+```sql
+SELECT rowid, c FROM t1;
+```
+![146](images/146.png)
+
+<br />
+
+- ###  the rowid 1, 2 and 3 have been reused for the new rows.
+
+<br />
+
+## -<ins> SQLite AUTOINCREMENT column attribute:
+
+### - SQLite recommends that you should not use `AUTOINCREMENT` attribute because:
+
+1. ### The `AUTOINCREMENT` keyword imposes extra CPU, memory, disk space, and disk I/O overhead and should be avoided if not strictly needed. It is usually not needed.
+
+### - In addition, the way SQLite assigns a value for the `AUTOINCREMENT` column slightly different from the way it does for the `rowid` column.
+
+<br/>
+
+### - Consider the following example:
+
+1. ###  First, drop and recreate the ***people*** table. This time, we use `AUTOINCREMENT` attribute column:
+
+```sql
+DROP TABLE people;
+
+CREATE TABLE people (
+   person_id INTEGER PRIMARY KEY AUTOINCREMENT,
+   first_name text NOT NULL,
+   last_name text NOT NULL
+);
+```
+2. ### Second, insert a row with the maximum ***rowid*** value into the ***people*** table.
+
+```sql
+INSERT INTO people (person_id,first_name,last_name)
+VALUES(9223372036854775807,'Johnathan','Smith');
+```
+
+3. ### Third, insert another row into the ***people*** table.
+
+```sql
+INSERT INTO people (first_name,last_name)
+VALUES('John','Smith');
+```
+
+### - This time, SQLite issued an error message because the ***person_id*** column did not reuse the number like a rowid column.
+
+```sql 
+[Err] 13 - database or disk is full
+```
+> ### When should you use the AUTOINCREMENT column attribute?
+
+- ### The main purpose of using attribute `AUTOINCREMENT` is to prevent SQLite to reuse a value that has not been used or a value from the previously deleted row.
+
+----------------------------------------------
+
