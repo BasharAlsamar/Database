@@ -63,8 +63,8 @@
 * [15. SQLite-Index](#SQLite-Index) ✅
 * [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) ✅
 * [17. SQLite Trigger](#SQLite-Trigger) ✅
-* [18. SQLite VACUUM](#SQLite-VACUUM) 
-* [19. SQLite Full-text Search](#SQLite-Full-text-Search) 
+* [18. SQLite VACUUM](#SQLite-VACUUM) ✅
+* [19. SQLite Full-text Search](#SQLite-Full-text-Search) ✅
 
 
 <br/>
@@ -5701,3 +5701,240 @@ DROP TRIGGER validate_email_before_insert_leads;
 ```
 
 ----------------------------------------------------
+
+> 18. ## SQLite VACUUM: 
+### - Why do you need SQLite VACUUM command?
+
+1. ### First, when you drop database objects such as tables, views, indexes, and triggers or delete data from tables, the database file size remains unchanged. Because SQLite just marks the deleted objects as free and reserves it for the future uses. As a result, the size of the database file always grows in size.
+
+2. ### Second, when you insert or delete data from the tables, the indexes and tables become fragmented, especially for the database that has a high number of inserts, updates, and deletes.
+
+3. ### third, the insert, update and delete operations create unused data block within individual database pages. It decreases the number of rows that can be stored in a single page. Therefore, it increases the number of pages to hold a table. Because of this, it increases storage overhead for the table, takes more time to read/write, and decreases the cache performance.
+
+![160](images/160.png)
+
+<br />
+
+### - SQLite first copies data within a database file to a temporary database. This operation defragments the database objects, ignores the free spaces, and repacks individual pages. Then, SQLite copies the content of the temporary database file back to the original database file. The original database file is overwritten.
+
+### - Because the `VACUUM` command rebuilds the database, you can use it to change some database-specific configuration parameters such as page size, page format, and default encoding. To do this, you set new values using pragma and then vacuum the database.
+
+### -<ins>The SQLite VACUUM command:
+
+The `VACUUM` command does not change the content of the database except the rowid values. If you use `INTEGER PRIMARY KEY` column, the `VACUUM` does not change the values of that column. However, if you use unaliased rowid, the `VACUUM` command will reset the rowid values. Besides changing the rowid values, the `VACUUM` command also builds the index from scratch.
+
+>>___NOTE:__ The VACUUM command will not run successfully if the database has a pending SQL statement or an open transaction.
+
+<br />
+
+### - <inns>How to run the SQLite VACUUM command?
+
+```sql
+VACUUM;
+```
+
+>>___NOTE:___ Make sure that there is no open transaction while you’re running the command.
+
+
+### - The following statement enables full auto-vacuum mode:
+
+```js
+PRAGMA auto_vacuum = FULL;
+```
+### - To enable incremental vacuum, you use the following statement:
+
+```js
+PRAGMA auto_vacuum = INCREMENTAL;
+```
+
+### - The following statement disables auto-vacuum mode:
+```js
+PRAGMA auto_vacuum = NONE;
+```
+
+### - <ins> VACUUM with an `INTO` clause:
+
+```sql
+VACUUM schema-name INTO filename;
+```
+
+### - The `VACUUM` statement with an `INTO` clause keeps the original database file unchanged and creates a new database with the file name specified. The new database will contain the same logical content as the original database, but fully vacuumed.
+
+<br />
+
+### - The filename in the `INTO` clause can be any SQL expression that evaluates to a string. It must be a path to a file that does not exist or to an empty file, or the `VACUUM INTO` command will result in an error.
+
+<br />
+
+### - The `VACUUM` command is very useful for generating backup copies of a live database. It is transactional safe, which the generated database is a consistent snapshot of the original database. However, if a unplanned shutdown or power lose interupts the command, the generated database might be corrupted.
+
+<br/>
+
+### - The following statement uses the `VACUUM INTO` command to generate a new database with the file name ***chinook_backup.db*** whose data is copied from of the main schema of the chinook database:
+
+```sql
+VACUUM main INTO 'c:\sqlite\db\chinook_backup.db';
+```
+
+--------------------------------------------------
+
+> 19. ## SQLite Full-text Search:
+
+### - A virtual table is a custom extension to SQLite. A virtual table is like a normal table. The difference between a virtual table and a normal table is where the data come from i.e., when you process a normal table, SQLite accesses the database file to retrieve data. However, when you access a virtual table, SQLite calls the custom code to get the data. The custom code can have specified logic to handle certain tasks such as getting data from multiple data sources.
+
+### - The following `CREATE VIRTUAL TABLE` statement creates an ***FTS5*** table with two columns:
+
+```sql
+CREATE VIRTUAL TABLE table_name 
+USING FTS5(column1,column2...);
+```
+
+>> ___Notice:___ that you cannot add types, constraints, or PRIMARY KEY declaration in the CREATE VIRTUAL TABLE statement for creating an FTS5 table. If you do so, SQLite will issue an error.
+
+
+### - The following example creates an ***FTS*** table named ***posts*** with two columns **title** and **body**.
+
+```sql
+CREATE VIRTUAL TABLE posts 
+USING FTS5(title, body);
+```
+
+###  - Similar to a normal table, you can insert data into the ***posts*** table as follows:
+
+```sql
+INSERT INTO posts(title,body)
+VALUES('Learn SQlite FTS5','This tutorial teaches you how to perform full-text search in SQLite using FTS5'),
+('Advanced SQlite Full-text Search','Show you some advanced techniques in SQLite full-text searching'),
+('SQLite Tutorial','Help you learn SQLite quickly and effectively');
+```
+
+### - And query data against it:
+
+```sql
+SELECT * FROM posts;
+```
+
+![161](images/161.png)
+
+<br />
+
+## - <ins>Querying data using full-text search:
+
+## - You can execute a full-text query against an FTS5 table using one of these three ways.
+
+1. ###  First, use a `MATCH` operator in the `WHERE` clause of the `SELECT` statement. For example, to get all rows that have the term fts5, you use the following query:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'fts5';
+```
+
+![162](images/162.png)
+
+<br />
+
+2. ### Second, use an equal `(=)` operator in the `WHERE` clause of the SELECT statement. The following statement returns the same result as the statement above:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts = 'fts5';
+```
+
+3. ### Third, use a tabled-value function syntax. In this way, you use the search term as the first table argument:
+
+```sql
+SELECT * 
+FROM posts('fts5');
+```
+### - To sort the search results from the most to least relevant, you use the `ORDER BY` clause as follows:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'text' 
+ORDER BY rank;
+```
+![163](images/163.png)
+
+<br />
+
+### - <ins> Prefix searches:
+### - You can use the asterisk `(*)` as a prefix token. When a phrase contains the asterisk (*), it will match any document that contains the token that begins with the phrase. For example, *search** matches with search, searching, searches, etc. See the following example:
+
+```sql
+SELECT * 
+FROM posts
+WHERE posts = 'search*';
+```
+
+![164](images/164.png)
+
+<br />
+
+### - Boolean operators: 
+### +  You can use the Boolean operator e.g., `NOT, OR, or AND` to combine queries.
+- ### q1 AND q2: matches if both q1 and q2 queries match.
+- ### q1 OR q2: matches if either query q1 or q2 matches.
+- ### q1 NOT q2: matches if query q1 matches and q2 doesn’t match.
+
+### - For example, to get the documents that match the learn phrase but doesn’t match the FTS5 phrase, you use the `NOT` operator as follows:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'learn NOT text';
+```
+![165](images/165.png)
+
+<br />
+
+### - To search for documents that match either phrase learn or text, you use the `OR` operator as the following example:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'learn OR text';
+```
+
+![166](images/166.png)
+
+<br />
+
+### - To find the documents that match both SQLite and searching, you use the `AND` operator as shown below:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'sqlite AND searching';
+```
+
+![167](images/167.png)
+
+<br />
+
+### - To change the operator precedence, you use parenthesis to group expressions. For example:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'search AND sqlite OR help';
+```
+
+![168](images/168.png)
+
+<br />
+
+### - The statement returns documents that match search and sqlite or help. To find the documents that match search and either sqlite or help, you use parenthesis as follows:
+
+```sql
+SELECT * 
+FROM posts 
+WHERE posts MATCH 'search AND (sqlite OR help)';
+```
+
+![169](images/169.png)
+
+<br />
+
