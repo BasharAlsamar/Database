@@ -4,7 +4,7 @@
 * [Download SQLite tools](#Download-SQLite-tools) ✅
 * [Run SQLite tools](#Run-SQLite-tools) ✅
 * [SQLite Commands](#SQLite-Commands) ✅
-* [SQLite Functions tables](#SQLite-Functions-tabels)
+
 
 
 <br />
@@ -281,6 +281,7 @@ AlbumId     Title
 <br />
 
 ------------------------------------------------------------------
+
 ## **SQLite Functions tables**:
 
 1. ## <ins> SQLite aggregate functions:
