@@ -4,6 +4,8 @@
 * [Download SQLite tools](#Download-SQLite-tools) ✅
 * [Run SQLite tools](#Run-SQLite-tools) ✅
 * [SQLite Commands](#SQLite-Commands) ✅
+* [SQLite Functions tables](#SQLite-Functions-tabels)
+
 
 <br />
 
@@ -276,7 +278,37 @@ AlbumId     Title
 203         A-Sides
 160         Ace Of Spades
 ```
+<br />
 
+------------------------------------------------------------------
+## **SQLite Functions tables**:
+
+1. ## <ins> SQLite aggregate functions:
+![f1](images/f1.png)
+
+<br />
+
+2. ## <ins> SQLite string functions:
+![f2](images/f2.png)
+
+<br />
+
+
+3. ## <ins> SQLite control flow functions:
+![f3](images/f3.png)
+
+<br />
+
+4. ## <ins> SQlite date and time functions:
+![f4](images/f4.png)
+
+<br />
+
+5. ## <ins> SQLite math functions:
+![f5](images/f5.png)
+
+<br />
+------------------------------------------------------------------
 ## **SQLITE TUTORIAL**:
 
 -----------------------------------------------------------
@@ -5409,3 +5441,10 @@ WHERE quantity*unitprice > 10;
 1. ### The expression must refer to the columns of the table that is being indexed only. It cannot refer to the columns of other tables.
 2. ### The expression can only use the deterministic function call.
 3. ### The expression cannot use a subquery.
+
+----------------------------------------------------
+
+> 17. ## SQLite Trigger:
+
+
+----------------------------------------------------
