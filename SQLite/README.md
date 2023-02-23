@@ -62,7 +62,7 @@
 * [14. SQLite Drop View](#SQLite-Drop-View) ✅
 * [15. SQLite-Index](#SQLite-Index) ✅
 * [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) ✅
-* [17. SQLite Trigger](#SQLite-Trigger) 
+* [17. SQLite Trigger](#SQLite-Trigger) ✅
 * [18. SQLite VACUUM](#SQLite-VACUUM) 
 * [19. SQLite Full-text Search](#SQLite-Full-text-Search) 
 
@@ -5447,5 +5447,257 @@ WHERE quantity*unitprice > 10;
 
 > 17. ## SQLite Trigger:
 
+### - What is an SQLite trigger ?
+- ### An SQLite trigger is a named database object that is executed automatically when an `INSERT`, `UPDATE` or `DELETE` statement is issued against the associated table.
+
+### - When do we need SQLite triggers ?
+- ### You often use triggers to enable sophisticated auditing. For example, you want to log the changes in the sensitive data such as ***salary*** and ***address*** whenever it changes.
+
+## - <ins>SQLite CREATE TRIGGER statement:
+- ### To create a new trigger in SQLite, you use the `CREATE TRIGGER` statement as follows:
+
+
+```sql 
+CREATE TRIGGER [IF NOT EXISTS] trigger_name 
+   [BEFORE|AFTER|INSTEAD OF] [INSERT|UPDATE|DELETE] 
+   ON table_name
+   [WHEN condition]
+BEGIN
+ statements;
+END;
+```
+
+### - In this syntax:
+
+1. ### First,  specify the name of the trigger after the `CREATE TRIGGER` keywords.
+2. ### Next, determine when the trigger is fired such as `BEFORE, AFTER, or INSTEAD OF`. You can create `BEFORE` and `AFTER` triggers on a table. However, you can only create an `INSTEAD OF` trigger on a view.
+3. ### Then, specify the event that causes the trigger to be invoked such as `INSERT`, `UPDATE`, or `DELETE`.
+4. ### After that, indicate the table to which the trigger belongs.
+5. ### Finally, place the trigger logic in the `BEGIN END` block, which can be any valid SQL statements.
+
+### - If you combine the time when the trigger is fired and the event that causes the trigger to be fired, you have a total of 9 possibilities:
+
+- ### `BEFORE INSERT`
+- ### `AFTER INSERT`
+- ### `BEFORE UPDATE`
+- ### `AFTER UPDATE`
+- ### `BEFORE DELETE`
+- ### `AFTER DELETE`
+- ### `INSTEAD OF INSERT`
+- ### `INSTEAD OF DELETE`
+- ### `INSTEAD OF UPDATE`
+
+### - Suppose you use a `UPDATE` statement to update 10 rows in a table, the trigger that associated with the table is fired 10 times. This trigger is called `FOR EACH ROW trigger`. If the trigger associated with the table is fired one time, we call this trigger a FOR EACH STATEMENT trigger.
+
+
+### - If you use a condition in the `WHEN clause`, the trigger is only invoked when the condition is true. In case you omit the WHEN clause, the trigger is executed for all rows.
+
+<br />
+
+>> ___NOTE:___ that if you drop a table, all associated triggers are also deleted. However, if the trigger references other tables, the trigger is not removed or changed if other tables are removed or updated.
+
+
+### - You can access the data of the row being inserted, deleted, or updated using the `OLD` and `NEW` references in the form: `OLD.column_name` and `NEW.column_name`.
+
+### - the `OLD` and `NEW` references are available depending on the event that causes the trigger to be fired.
+
+<br />
+
+### - The following table illustrates the rules.:
+
+| Action   |  Reference    |  
+|----------|:-------------|
+| INSERT |  NEW is available |
+| UPDATE |  Both NEW and OLD are available|  
+| DELETE | OLD is available |  
+
+<br />
+
+## - <ins>SQLite triggers examples:
+### -Let’s create a new table called ***leads*** to store all business leads of the company.
+
+```sql
+CREATE TABLE leads (
+	id integer PRIMARY KEY,
+	first_name text NOT NULL,
+	last_name text NOT NULL,
+	phone text NOT NULL,
+	email text NOT NULL,
+	source text NOT NULL
+);
+```
+
+### 1) <ins> SQLite BEFORE INSERT trigger example:
+- ### Suppose you want to validate the email address before inserting a new lead into the leads table. In this case, you can use a `BEFORE INSERT trigger`.
+
+1. ### First, create a `BEFORE INSERT trigger` as follows:
+
+```sql
+CREATE TRIGGER validate_email_before_insert_leads 
+   BEFORE INSERT ON leads
+BEGIN
+   SELECT
+      CASE
+	WHEN NEW.email NOT LIKE '%_@__%.__%' THEN
+   	  RAISE (ABORT,'Invalid email address')
+       END;
+END;
+```
+### - We used the `NEW` reference to access the email column of the row that is being inserted.
+
+### - To validate the email, we used the `LIKE` operator to determine whether the email is valid or not based on the email pattern. If the email is not valid, the `RAISE` function aborts the insert and issues an error message.
+
+2. ### Second, insert a row with an invalid email into the leads table.
+
+```sql
+INSERT INTO leads (first_name,last_name,email,phone)
+VALUES('John','Doe','jjj','4089009334');
+```
+
+### - SQLite issued an error: “Invalid email address” and aborted the execution of the insert.
+
+3. ### Third, insert a row with a valid email.
+
+```sql
+INSERT INTO leads (first_name, last_name, email, phone)
+VALUES ('John', 'Doe', 'john.doe@sqlitetutorial.net', '4089009334');
+```
+
+### - Because the email is valid, the insert statement executed successfully.
+
+```sql
+SELECT
+	first_name,
+	last_name,
+	email,
+	phone
+FROM
+	leads;
+```
+
+![158](images/158.png)
+
+<br />
+
+### <ins> 2) SQLite AFTER UPDATE trigger example:
+
+### - The phones and emails of the leads are so important that you can’t afford to lose this information. For example, someone accidentally updates the email or phone to the wrong ones or even delete it.
+
+### - To protect this valuable data, you use a trigger to log all changes which are made to the phone and email.
+
+1. ### First, create a new table called ***lead_logs*** to store the historical data.
+
+```sql
+CREATE TABLE lead_logs (
+	id INTEGER PRIMARY KEY,
+	old_id int,
+	new_id int,
+	old_phone text,
+	new_phone text,
+	old_email text,
+	new_email text,
+	user_action text,
+	created_at text
+);
+```
+
+2.  ### Second, create an `AFTER UPDATE trigger` to log data to the ***lead_logs*** table whenever there is an update in the email or phone column.
+
+```sql
+CREATE TRIGGER log_contact_after_update 
+   AFTER UPDATE ON leads
+   WHEN old.phone <> new.phone
+        OR old.email <> new.email
+BEGIN
+	INSERT INTO lead_logs (
+		old_id,
+		new_id,
+		old_phone,
+		new_phone,
+		old_email,
+		new_email,
+		user_action,
+		created_at
+	)
+VALUES
+	(
+		old.id,
+		new.id,
+		old.phone,
+		new.phone,
+		old.email,
+		new.email,
+		'UPDATE',
+		DATETIME('NOW')
+	) ;
+END;
+```
+
+### - You notice that in the condition in the `WHEN` clause specifies that the trigger is invoked only when there is a change in either email or phone column.
+
+<br />
+
+3. ### Third, update the last name of John from Doe to Smith.
+
+```sql
+UPDATE leads
+SET 
+   last_name = 'Smith'
+WHERE
+   id = 1;
+```
+
+### - The trigger `log_contact_after_update` was not invoked because there was no change in email or phone.
+
+<br />
+
+4. ###  Fourth, update both email and phone of John to the new ones.
+
+```sql
+UPDATE leads
+SET 
+   phone = '4089998888',
+   email = 'john.smith@sqlitetutorial.net'
+WHERE
+   id = 1;
+```
+
+### - If you check the log table, you will see there is a new entry there.
+
+```sql
+SELECT
+   old_phone, 
+   new_phone, 
+   old_email, 
+   new_email, 
+   user_action
+FROM
+   lead_logs;
+```
+
+![159](images/159.png)
+
+<br />
+
+### <ins>SQLite DROP TRIGGER statement:
+
+### - To drop an existing trigger, you use the `DROP TRIGGER` statement as follows:
+
+```sql
+DROP TRIGGER [IF EXISTS] trigger_name;
+```
+
+### - In this syntax:
+
+ 1. ### First, specify the name of the trigger that you want to drop after the `DROP TRIGGER` keywords.
+2. ### Second, use the `IF EXISTS` option to delete the trigger only if it exists.
+
+>> ___NOTE:___ Note that if you drop a table, SQLite will automatically drop all triggers associated with the table.
+
+### - For example, to remove the `validate_email_before_insert_leads` trigger, you use the following statement:
+
+```sql
+DROP TRIGGER validate_email_before_insert_leads;
+```
 
 ----------------------------------------------------
