@@ -59,7 +59,7 @@
 * [13. SQLite Create View](#SQLite-Create-View) ✅
 * [14. SQLite Drop View](#SQLite-Drop-View) ✅
 * [15. SQLite-Index](#SQLite-Index) ✅
-* [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) 
+* [16. SQLite Expression-based Index](#SQLite-Expression-based-Index) ✅
 * [17. SQLite Trigger](#SQLite-Trigger) 
 * [18. SQLite VACUUM](#SQLite-VACUUM) 
 * [19. SQLite Full-text Search](#SQLite-Full-text-Search) 
@@ -5332,3 +5332,80 @@ DROP INDEX idx_contacts_name;
 ```
 
 ### - The ***idx_contacts_name*** index is removed completely from the database.
+
+--------------------------------------------------------
+
+> 16. ## SQLite Expression-based Index: 
+###  To query data to improve the query performance especially for the queries that use expression or function.
+
+<br />
+
+### - When you create an index, you often use one or more columns in a table. Besides the normal indexes, SQLite allows you to form an index based on expressions involved table columns. This kind of index is called an expression based index.
+
+<br />
+
+### - The following query selects the customers whose the length of the company is greater than 10 characters.
+
+```sql
+SELECT customerid,
+       company
+  FROM customers
+ WHERE length(company) > 10
+ ORDER BY length(company) DESC;
+```
+### - If you use the `EXPLAIN QUERY PLAN` statement, you will find that SQLite query planner had to scan the whole customers table to return the result set.
+
+```sql
+EXPLAIN QUERY PLAN
+SELECT customerid,
+       company
+  FROM customers
+ WHERE length(company) > 10
+ ORDER BY length(company) DESC;
+```
+
+### - To create an index based on the expression `LENGTH(company)`, you use the following statement.
+
+```sql 
+CREATE INDEX customers_length_company 
+ON customers(LENGTH(company));
+```
+
+### - Now if you execute the query above again, SQLite will use the expression index to search to select the data, which is faster.
+
+<br />
+
+### - How the SQLite expression-based index work?
+- ### The SQLite query planner uses the expression-based index only when the expression, which you specified in the `CREATE INDEX` statement, appears the same as in the `WHERE` clause or `ORDER BY` clause.
+
+<br />
+
+### - For example, in the sample database, we have the ***invoice_items*** table.
+
+### - The following statement creates an index using the unit price and quantity columns.
+
+```sql
+CREATE INDEX invoice_line_amount 
+ON invoice_items(unitprice*quantity);
+```
+### -  when you run the following query:
+
+```sql
+EXPLAIN QUERY PLAN 
+SELECT invoicelineid,
+       invoiceid, 
+       unitprice*quantity
+FROM invoice_items
+WHERE quantity*unitprice > 10;
+```
+
+
+### - The SQLite query planner did not use the index because the expression in the `CREATE INDEX ( unitprice*quantity)` is not the same as the one in the `WHERE` clause (quantity*unitprice)
+
+
+ ## <ins> SQLite expression based index restriction:
+### - The following lists all the restrictions on the expression that appears in the `CREATE INDEX` statement.
+
+1. ### The expression must refer to the columns of the table that is being indexed only. It cannot refer to the columns of other tables.
+2. ### The expression can only use the deterministic function call.
+3. ### The expression cannot use a subquery.
