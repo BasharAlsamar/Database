@@ -71,7 +71,7 @@
 
 * # **SQLITE TOOLS:**
 * [1. SQLite Import CSV](#SQLite-Import-CSV) ✅
-* [2. SQLite Export CSV](#SQLite-Export-CSV) 
+* [2. SQLite Export CSV](#SQLite-Export-CSV) ✅
 
 <br/>
 
@@ -6007,4 +6007,55 @@ CREATE TABLE cities(
 ```sql
 sqlite> .mode csv
 sqlite> .import c:/sqlite/city_no_header.csv cities
+```
+
+-----------------------------------------
+> 2. ## SQLite Export CSV
+
+### -  To export data from the SQLite database to a CSV file, you use these steps:
+
+1. ### Turn on the header of the result set using the `.header` on command.
+2. ### Set the output mode to CSV to instruct the sqlite3 tool to issue the result in the CSV mode.
+3. ### Send the output to a CSV file.
+4. ### Issue the query to select data from the table to which you want to export.
+
+<br />
+
+### - The following commands select data from the customers table and export it to the data.csv file
+
+```sql
+>sqlite3 c:/sqlite/chinook.db
+sqlite> .headers on
+sqlite> .mode csv
+sqlite> .output data.csv
+sqlite> SELECT customerid,
+   ...>        firstname,
+   ...>        lastname,
+   ...>        company
+   ...>   FROM customers;
+sqlite> .quit
+```
+
+### - If you check the ***data.csv*** file, you will see the following output.
+
+![170](images/170.png)
+
+<br />
+
+### - Besides using the dot-commands, you can use the options of the sqlite3 tool to export data from the SQLite database to a CSV file.
+
+### - For example, the following command exports the data from the tracks table to a CSV file named tracks.csv.
+
+```sql
+sqlite3 -header -csv c:/sqlite/chinook.db "select * from tracks;" > tracks.csv
+```
+
+![171](images/171.png)
+
+<br />
+
+### - If you have a file named `query.sql` that contains the script to query data, you can execute the statements in the file and export data to a CSV file.
+
+```cmd
+>sqlite3 -header -csv c:/sqlite/chinook.db < query.sql > data.csv
 ```
