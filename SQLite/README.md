@@ -76,7 +76,7 @@
 <br/>
 
 * # **SQLITE INTERFACES:**
-* [1. SQLite Python](#Shttps://github.com/ahmadSoliman94/Database/tree/main/SQLite/SQLite%20with%20Python) ✅
+* [SQLite Python](Shttps://github.com/ahmadSoliman94/Database/tree/main/SQLite/SQLite%20with%20Python) ✅
 
 <br/>
 <br/>
