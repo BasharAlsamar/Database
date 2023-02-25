@@ -75,18 +75,8 @@
 
 <br/>
 
-* # **SQLITE FUNCTIONS:**
-* [1. SQLite AVG](#SQLite-AVG) 
-* [2. SQLite COUNT](#SQLite-COUNT) 
-* [3. SQLite MAX](#SQLite-MAX) 
-* [4. SQLite MIN](#SQLite-MIN) 
-* [5. SQLite SUM](#SQLite-SUM) 
-
-
-<br/>
-
 * # **SQLITE INTERFACES:**
-* [1. SQLite Python](#SQLite-Python)
+* [1. SQLite Python](#Shttps://github.com/ahmadSoliman94/Database/tree/main/SQLite/SQLite%20with%20Python) ✅
 
 <br/>
 <br/>
